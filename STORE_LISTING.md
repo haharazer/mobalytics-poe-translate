@@ -40,4 +40,4 @@ Mobalytics PoE 中文化
 ## 图片素材
 
 - 商店图标：`store-assets/icon-128.png`（128 × 128）
-- 产品截图：`store-assets/store-screenshot-1280x1280.png`（1280 × 1280）
+- 产品截图：`store-assets/store-screenshot-1280x800.png`（1280 × 800）
