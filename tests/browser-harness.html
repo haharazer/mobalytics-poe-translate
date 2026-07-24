@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Translation browser harness</title>
+    <script>
+      const storageListeners = [];
+      const messageListeners = [];
+      globalThis.chrome = {
+        storage: {
+          sync: {
+            get(defaults, callback) {
+              callback({ ...defaults, language: "zh-CN" });
+            },
+            set(values) {
+              const changes = Object.fromEntries(
+                Object.entries(values).map(([key, value]) => [
+                  key,
+                  { newValue: value }
+                ])
+              );
+              changeSettings(changes);
+            }
+          },
+          onChanged: {
+            addListener(listener) {
+              storageListeners.push(listener);
+            }
+          }
+        },
+        runtime: {
+          onMessage: {
+            addListener(listener) {
+              messageListeners.push(listener);
+            }
+          }
+        }
+      };
+
+      function changeSettings(changes) {
+        for (const listener of storageListeners) {
+          listener(changes, "sync");
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main>
+      <span id="active">Shield Charge</span>
+      <span id="support">Momentum</span>
+      <span id="attribute" title="Arcane Surge">tooltip target</span>
+      <p id="prose">Cast Shield Charge to move.</p>
+      <div id="dynamic-root"></div>
+    </main>
+
+    <script src="../src/translation-core.js"></script>
+    <script src="../data/poe1-skill-gems.js"></script>
+    <script src="../src/content.js"></script>
+    <script>
+      const results = {};
+      const settle = (callback) => setTimeout(callback, 50);
+
+      settle(() => {
+        results.initial = {
+          active: document.querySelector("#active").textContent,
+          support: document.querySelector("#support").textContent,
+          attribute: document.querySelector("#attribute").title,
+          prose: document.querySelector("#prose").textContent
+        };
+
+        const dynamic = document.createElement("span");
+        dynamic.id = "dynamic";
+        dynamic.textContent = "Efficacy";
+        document.querySelector("#dynamic-root").append(dynamic);
+
+        settle(() => {
+          results.dynamic = dynamic.textContent;
+          changeSettings({
+            language: { oldValue: "zh-CN", newValue: "zh-TW" }
+          });
+
+          settle(() => {
+            results.traditional = {
+              active: document.querySelector("#active").textContent,
+              support: document.querySelector("#support").textContent,
+              dynamic: dynamic.textContent
+            };
+            changeSettings({
+              language: { oldValue: "zh-TW", newValue: "en" }
+            });
+
+            settle(() => {
+              results.english = {
+                active: document.querySelector("#active").textContent,
+                support: document.querySelector("#support").textContent,
+                dynamic: dynamic.textContent,
+                attribute: document.querySelector("#attribute").title
+              };
+
+              const expected = {
+                initial: {
+                  active: "重盾冲锋",
+                  support: "动量（辅）",
+                  attribute: "秘术增强(辅)",
+                  prose: "Cast Shield Charge to move."
+                },
+                dynamic: "效能(辅)",
+                traditional: {
+                  active: "重盾衝鋒",
+                  support: "氣勢輔助",
+                  dynamic: "效能輔助"
+                },
+                english: {
+                  active: "Shield Charge",
+                  support: "Momentum",
+                  dynamic: "Efficacy",
+                  attribute: "Arcane Surge"
+                }
+              };
+
+              const passed = JSON.stringify(results) === JSON.stringify(expected);
+              document.body.dataset.result = passed ? "pass" : "fail";
+              document.querySelector("#result").textContent = JSON.stringify({
+                passed,
+                results,
+                expected
+              });
+            });
+          });
+        });
+      });
+    </script>
+    <pre id="result">running</pre>
+  </body>
+</html>

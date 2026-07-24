@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mobalytics PoE 中文化</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="mark" aria-hidden="true">流</div>
+        <div>
+          <h1>PoE 技能石中文化</h1>
+          <p>Mobalytics · Path of Exile 1</p>
+        </div>
+      </header>
+
+      <section aria-labelledby="language-title">
+        <h2 id="language-title">显示语言</h2>
+        <div class="segmented">
+          <label>
+            <input type="radio" name="language" value="zh-CN">
+            <span>简体</span>
+          </label>
+          <label>
+            <input type="radio" name="language" value="zh-TW">
+            <span>繁體</span>
+          </label>
+          <label>
+            <input type="radio" name="language" value="en">
+            <span>English</span>
+          </label>
+        </div>
+      </section>
+
+      <section aria-labelledby="mode-title">
+        <div class="row">
+          <div>
+            <h2 id="mode-title">保留英文</h2>
+            <p class="hint">显示为「重盾冲锋 (Shield Charge)」</p>
+          </div>
+          <label class="switch">
+            <input id="bilingual" type="checkbox">
+            <span aria-hidden="true"></span>
+          </label>
+        </div>
+      </section>
+
+      <footer>
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="status">正在检查当前页面…</span>
+      </footer>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
