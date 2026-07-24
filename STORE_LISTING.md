@@ -36,3 +36,8 @@ Mobalytics PoE 中文化
 
 扩展不收集或传输用户数据，所有翻译均在浏览器本地完成。完整说明见
 `PRIVACY.md`。
+
+## 图片素材
+
+- 商店图标：`store-assets/icon-128.png`（128 × 128）
+- 产品截图：`store-assets/store-screenshot-1280x1280.png`（1280 × 1280）
