@@ -1,0 +1,10 @@
+[
+  {
+    "statId": "base_reduce_enemy_cold_resistance_%",
+    "sourceFile": "skill_stat_descriptions.txt",
+    "clientTemplate": "Penetrates {0}% Cold Resistance",
+    "siteTemplate": "Penetrates {0}% to Cold Resistance",
+    "source": "https://mobalytics.gg/poe/builds/fubgun-winter-orb-elementalist",
+    "reason": "Support tooltip uses the resistance property wording with an extra 'to'."
+  }
+]

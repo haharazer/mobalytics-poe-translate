@@ -171,6 +171,16 @@ footer {
   font-size: 11px;
 }
 
+.category-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 12px;
+}
+
+.coverage { margin-top: 10px; line-height: 1.5; }
+
 .status-dot {
   width: 7px;
   height: 7px;

@@ -1,0 +1,953 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "schema_version": 1,
+      "game": "poe1",
+      "adapter": "client-translation-snapshot",
+      "channel": "International",
+      "container": {
+        "name": "Content.ggpk",
+        "size": 69710187201,
+        "last_write_utc": "2026-11-04T09:25:17.8736156Z"
+      },
+      "schema": {
+        "filename": "schema-poe1.8c84cfbba60b.min.json",
+        "sha256": "3cfc97b937ecf6c12a6edbd98015069197cec8779e019228e96ea1355c10a320"
+      },
+      "inputs": [
+        {
+          "path": "en/gemeffects.csv",
+          "logical_path": "data/gemeffects.datc64",
+          "sha256": "011e7a80387ea3768f8c1e9d6199bf57fa7eabbdffdd2189a1ab110549a118a1",
+          "raw_sha256": "914bcdc53b9e8b06f271b17a185c25a5715c56a70b25ccc566ff2216360a7a0e",
+          "size": 237554
+        },
+        {
+          "path": "zh-TW/gemeffects.csv",
+          "logical_path": "data/traditional chinese/gemeffects.datc64",
+          "sha256": "ef33d2c3395e60a15fb3a1aa937ae1794cd8ba7f4747a1b08d9209edb74039ff",
+          "raw_sha256": "82720aaaa3288487ca74a24f07070d5f6c522228d46241c93e1f832c563a95e2",
+          "size": 231635
+        },
+        {
+          "path": "en/skillgeminfo.csv",
+          "logical_path": "data/skillgeminfo.datc64",
+          "sha256": "731dd1c7fb12705288f237c1a93131ca9f6f7cf810e2386c0180c6695722293d",
+          "raw_sha256": "9ed48b096cc7cd69fc7eb6863098571b6d4e87c4e56aa798077b37745104b608",
+          "size": 76629
+        },
+        {
+          "path": "zh-TW/skillgeminfo.csv",
+          "logical_path": "data/traditional chinese/skillgeminfo.datc64",
+          "sha256": "5188703bffb7e8831a6dc72e15491b011b3785930ea14bafc6389d50aa36d065",
+          "raw_sha256": "786e7c126f9bec399278a628692c9e58bc6e4f9239ea9056c69f5fe1adfc85d5",
+          "size": 70266
+        },
+        {
+          "path": "en/words.csv",
+          "logical_path": "data/words.datc64",
+          "sha256": "d1259a27a2542ea7917ce233df233e70b0c7da681995cccf7ed1cd57053f688f",
+          "raw_sha256": "222294fcfee03ab89a4473705f27e6511a660a5f5a1fce5c68c26de990aadd57",
+          "size": 351857
+        },
+        {
+          "path": "zh-TW/words.csv",
+          "logical_path": "data/traditional chinese/words.datc64",
+          "sha256": "1b03c446c94b95d3613d7210211c5a6662be90a5ca5574b873e2632272fe986d",
+          "raw_sha256": "94489c2cec4b9788b82d365ce5116ebb09474a27497c58a8165c2152a3ed3f2a",
+          "size": 349850
+        },
+        {
+          "path": "en/uniquestashlayout.csv",
+          "logical_path": "data/uniquestashlayout.datc64",
+          "sha256": "4f708ffd5e86b3662e8ec753674786f1d8cc765021cd26bcbcc88334413de17d",
+          "raw_sha256": "a09e7762e070f5dd3d1cfe2dfa90a3144de2802273c886e9778a8a493e4abaf1",
+          "size": 115686
+        },
+        {
+          "path": "zh-TW/uniquestashlayout.csv",
+          "logical_path": "data/traditional chinese/uniquestashlayout.datc64",
+          "sha256": "4f708ffd5e86b3662e8ec753674786f1d8cc765021cd26bcbcc88334413de17d",
+          "raw_sha256": "a09e7762e070f5dd3d1cfe2dfa90a3144de2802273c886e9778a8a493e4abaf1",
+          "size": 115686
+        },
+        {
+          "path": "en/passiveskillmasteryeffects.csv",
+          "logical_path": "data/passiveskillmasteryeffects.datc64",
+          "sha256": "ee8de37b1a86d6a09e491321cba602aaed082a90e5b318215df57b137d5f7efe",
+          "raw_sha256": "790dfce143ca1a77ef6d31f168c9eed49b16d12590c0bfbe8c9a97f68398d467",
+          "size": 23367
+        },
+        {
+          "path": "zh-TW/passiveskillmasteryeffects.csv",
+          "logical_path": "data/traditional chinese/passiveskillmasteryeffects.datc64",
+          "sha256": "ee8de37b1a86d6a09e491321cba602aaed082a90e5b318215df57b137d5f7efe",
+          "raw_sha256": "790dfce143ca1a77ef6d31f168c9eed49b16d12590c0bfbe8c9a97f68398d467",
+          "size": 23367
+        },
+        {
+          "path": "en/stats.csv",
+          "logical_path": "data/stats.datc64",
+          "sha256": "140e8ac4e03e45598d87805a0b149d36dadb81410f77a139f51533e86885c5c6",
+          "raw_sha256": "dc2854c92c79d3fcbb0d31b59ed5aa668d3e8d90b95e6d833d10df5ab896ab4c",
+          "size": 3483028
+        },
+        {
+          "path": "zh-TW/stats.csv",
+          "logical_path": "data/traditional chinese/stats.datc64",
+          "sha256": "140e8ac4e03e45598d87805a0b149d36dadb81410f77a139f51533e86885c5c6",
+          "raw_sha256": "dc2854c92c79d3fcbb0d31b59ed5aa668d3e8d90b95e6d833d10df5ab896ab4c",
+          "size": 3483028
+        },
+        {
+          "path": "en/statdescriptions/active_skill_gem_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/active_skill_gem_stat_descriptions.txt",
+          "sha256": "2b0b9383c2c0fe18342595154ea1e7cd9e9ebae338860473067b33b04d6270fe",
+          "raw_sha256": "2b0b9383c2c0fe18342595154ea1e7cd9e9ebae338860473067b33b04d6270fe",
+          "size": 861872
+        },
+        {
+          "path": "en/statdescriptions/advanced_mod_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/advanced_mod_stat_descriptions.txt",
+          "sha256": "411853191bf0ea5e2179111f4927d77dd5862201fa88e5faeb24abaebd24d68d",
+          "raw_sha256": "411853191bf0ea5e2179111f4927d77dd5862201fa88e5faeb24abaebd24d68d",
+          "size": 202142
+        },
+        {
+          "path": "en/statdescriptions/atlas_relic_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/atlas_relic_stat_descriptions.txt",
+          "sha256": "2995bcbbe8446c6341508f78da9a4554b803c32f4c012329ee5613fc65953d2e",
+          "raw_sha256": "2995bcbbe8446c6341508f78da9a4554b803c32f4c012329ee5613fc65953d2e",
+          "size": 9866
+        },
+        {
+          "path": "en/statdescriptions/atlas_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/atlas_stat_descriptions.txt",
+          "sha256": "5610eee38a40f0e15420cf347d362a35c3c92af98816fc4a44cf235edd7c1743",
+          "raw_sha256": "5610eee38a40f0e15420cf347d362a35c3c92af98816fc4a44cf235edd7c1743",
+          "size": 2712930
+        },
+        {
+          "path": "en/statdescriptions/aura_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/aura_skill_stat_descriptions.txt",
+          "sha256": "e8ec6bb3e6e8f7046302c076b36d490efa221775d719ca7716f189d540aaabbe",
+          "raw_sha256": "e8ec6bb3e6e8f7046302c076b36d490efa221775d719ca7716f189d540aaabbe",
+          "size": 227690
+        },
+        {
+          "path": "en/statdescriptions/banner_aura_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/banner_aura_skill_stat_descriptions.txt",
+          "sha256": "be8c8f56740c0443a00d6d2dd1452da6d1fba8ec04e4c0e15acc4da6da3965bf",
+          "raw_sha256": "be8c8f56740c0443a00d6d2dd1452da6d1fba8ec04e4c0e15acc4da6da3965bf",
+          "size": 49934
+        },
+        {
+          "path": "en/statdescriptions/beam_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/beam_skill_stat_descriptions.txt",
+          "sha256": "95038ae718bc27642c92cf0294b8e8aa0a5b98fc08cca79196d8a2af71d4149f",
+          "raw_sha256": "95038ae718bc27642c92cf0294b8e8aa0a5b98fc08cca79196d8a2af71d4149f",
+          "size": 9630
+        },
+        {
+          "path": "en/statdescriptions/brand_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/brand_skill_stat_descriptions.txt",
+          "sha256": "068e7ce7528e75633b6e12a3c598ba1c11ee57fd900fa1224e3e87c675147e35",
+          "raw_sha256": "068e7ce7528e75633b6e12a3c598ba1c11ee57fd900fa1224e3e87c675147e35",
+          "size": 31726
+        },
+        {
+          "path": "en/statdescriptions/buff_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/buff_skill_stat_descriptions.txt",
+          "sha256": "8614ca48ea7c70f0d8d2ffa63c111b9bf842e8f7f541ed9dfa927e5d2a667970",
+          "raw_sha256": "8614ca48ea7c70f0d8d2ffa63c111b9bf842e8f7f541ed9dfa927e5d2a667970",
+          "size": 152454
+        },
+        {
+          "path": "en/statdescriptions/chest_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/chest_stat_descriptions.txt",
+          "sha256": "60e588618dbdfc8db56ea286fe4bbdd950ca2e69de5dcccd562b6b295b1c4655",
+          "raw_sha256": "60e588618dbdfc8db56ea286fe4bbdd950ca2e69de5dcccd562b6b295b1c4655",
+          "size": 185690
+        },
+        {
+          "path": "en/statdescriptions/curse_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/curse_skill_stat_descriptions.txt",
+          "sha256": "786776c051d94533032e94aee33b886594f2af7619f1f8e13414efd5bfa9767a",
+          "raw_sha256": "786776c051d94533032e94aee33b886594f2af7619f1f8e13414efd5bfa9767a",
+          "size": 203846
+        },
+        {
+          "path": "en/statdescriptions/debuff_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/debuff_skill_stat_descriptions.txt",
+          "sha256": "1b8a86ecb7682a1a0608c5707dd758f50862dab7cbdecd68cf19c5aa22f5ef2c",
+          "raw_sha256": "1b8a86ecb7682a1a0608c5707dd758f50862dab7cbdecd68cf19c5aa22f5ef2c",
+          "size": 61168
+        },
+        {
+          "path": "en/statdescriptions/deepwater_applied_adjacent_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/deepwater_applied_adjacent_stat_descriptions.txt",
+          "sha256": "38fe7210b82d04edfbd95733ec328557bb6aad05259240038087bbbf4ba21f8d",
+          "raw_sha256": "38fe7210b82d04edfbd95733ec328557bb6aad05259240038087bbbf4ba21f8d",
+          "size": 6894
+        },
+        {
+          "path": "en/statdescriptions/deepwater_explicit_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/deepwater_explicit_stat_descriptions.txt",
+          "sha256": "f04c6e49b4936c554c86ee0bda2c6d22b61a4d48b0673ff101d416c48b1ec4df",
+          "raw_sha256": "f04c6e49b4936c554c86ee0bda2c6d22b61a4d48b0673ff101d416c48b1ec4df",
+          "size": 61674
+        },
+        {
+          "path": "en/statdescriptions/deepwater_implicit_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/deepwater_implicit_stat_descriptions.txt",
+          "sha256": "2d711d3d30631dbb55f1497189cfe1f3fd6e2d7f58c4b22cbf82b2a9b9d315cd",
+          "raw_sha256": "2d711d3d30631dbb55f1497189cfe1f3fd6e2d7f58c4b22cbf82b2a9b9d315cd",
+          "size": 190784
+        },
+        {
+          "path": "en/statdescriptions/deepwater_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/deepwater_stat_descriptions.txt",
+          "sha256": "276bef9e6e4f39e2f5f0023fdd8cc5dd10d0fb07a7ec86c2f3afed28774beec0",
+          "raw_sha256": "276bef9e6e4f39e2f5f0023fdd8cc5dd10d0fb07a7ec86c2f3afed28774beec0",
+          "size": 418
+        },
+        {
+          "path": "en/statdescriptions/expedition_relic_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/expedition_relic_stat_descriptions.txt",
+          "sha256": "fd6b6976e1c0ce172199a79c6ab023f9d9a7d72f7fc33f210ca80013b04c544c",
+          "raw_sha256": "fd6b6976e1c0ce172199a79c6ab023f9d9a7d72f7fc33f210ca80013b04c544c",
+          "size": 410034
+        },
+        {
+          "path": "en/statdescriptions/gem_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/gem_stat_descriptions.txt",
+          "sha256": "65e5381482a41659cb087bbf7f04ae28412515735bf080165620269f817551a0",
+          "raw_sha256": "65e5381482a41659cb087bbf7f04ae28412515735bf080165620269f817551a0",
+          "size": 2616024
+        },
+        {
+          "path": "en/statdescriptions/graft_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/graft_stat_descriptions.txt",
+          "sha256": "f5982b116f23c1d7a477c05b76214b58ed71382bd5d511102bbbeb73da4905fa",
+          "raw_sha256": "f5982b116f23c1d7a477c05b76214b58ed71382bd5d511102bbbeb73da4905fa",
+          "size": 333738
+        },
+        {
+          "path": "en/statdescriptions/heist_equipment_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/heist_equipment_stat_descriptions.txt",
+          "sha256": "60967401cc6ddf498df3d4d131058bb9c33fdc9a6f881be7c30931063d905108",
+          "raw_sha256": "60967401cc6ddf498df3d4d131058bb9c33fdc9a6f881be7c30931063d905108",
+          "size": 296722
+        },
+        {
+          "path": "en/statdescriptions/leaguestone_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/leaguestone_stat_descriptions.txt",
+          "sha256": "2dbb26707e628018ed6305640d122e0da9f6ca6ee4c458722f3c23d0c3e98161",
+          "raw_sha256": "2dbb26707e628018ed6305640d122e0da9f6ca6ee4c458722f3c23d0c3e98161",
+          "size": 459372
+        },
+        {
+          "path": "en/statdescriptions/map_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/map_stat_descriptions.txt",
+          "sha256": "f96efb59edbe9c285867e5f27285d207443ccbc7a31fbd607a43516ed364c769",
+          "raw_sha256": "f96efb59edbe9c285867e5f27285d207443ccbc7a31fbd607a43516ed364c769",
+          "size": 506936
+        },
+        {
+          "path": "en/statdescriptions/mercenary_support_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/mercenary_support_stat_descriptions.txt",
+          "sha256": "47b7400b81544d5738489182d0b262c1ff63f853d705822dcef0dd7303fb0525",
+          "raw_sha256": "47b7400b81544d5738489182d0b262c1ff63f853d705822dcef0dd7303fb0525",
+          "size": 149546
+        },
+        {
+          "path": "en/statdescriptions/minion_attack_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/minion_attack_skill_stat_descriptions.txt",
+          "sha256": "e82f7e9419b8655d4ce37d5b068a955cd1d79cd8a3588e5716ed9ddb45611dac",
+          "raw_sha256": "e82f7e9419b8655d4ce37d5b068a955cd1d79cd8a3588e5716ed9ddb45611dac",
+          "size": 600354
+        },
+        {
+          "path": "en/statdescriptions/minion_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/minion_skill_stat_descriptions.txt",
+          "sha256": "d50ef67efd6ebfc02b66b80eb8f362c8a6547715fa3d146eec00d8c5a20fd151",
+          "raw_sha256": "d50ef67efd6ebfc02b66b80eb8f362c8a6547715fa3d146eec00d8c5a20fd151",
+          "size": 1044926
+        },
+        {
+          "path": "en/statdescriptions/minion_spell_damage_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/minion_spell_damage_skill_stat_descriptions.txt",
+          "sha256": "03c1806b2df4e3d51375711a1fd986e26c43067d621683a0fdb7bb39efd1c81d",
+          "raw_sha256": "03c1806b2df4e3d51375711a1fd986e26c43067d621683a0fdb7bb39efd1c81d",
+          "size": 337394
+        },
+        {
+          "path": "en/statdescriptions/minion_spell_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/minion_spell_skill_stat_descriptions.txt",
+          "sha256": "a565f993546f3488605412367151e30b0bca86d9cb49c6595684b47ad0bfdccb",
+          "raw_sha256": "a565f993546f3488605412367151e30b0bca86d9cb49c6595684b47ad0bfdccb",
+          "size": 26538
+        },
+        {
+          "path": "en/statdescriptions/mirage_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/mirage_stat_descriptions.txt",
+          "sha256": "ab8e37b93f32c605b07a028670487c5add5d5a5f7961db314d56d7bcfbe04c1d",
+          "raw_sha256": "ab8e37b93f32c605b07a028670487c5add5d5a5f7961db314d56d7bcfbe04c1d",
+          "size": 135696
+        },
+        {
+          "path": "en/statdescriptions/monster_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/monster_stat_descriptions.txt",
+          "sha256": "5cec68dc3f2eb1e11afbad67c7a4c4c11f0b803ebe028733a5d772dcef1471d7",
+          "raw_sha256": "5cec68dc3f2eb1e11afbad67c7a4c4c11f0b803ebe028733a5d772dcef1471d7",
+          "size": 40060
+        },
+        {
+          "path": "en/statdescriptions/necropolis_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/necropolis_stat_descriptions.txt",
+          "sha256": "6bde47c05dc34494fe47bb34a2b18759d36793900fc5b6fab457e46da891d0ac",
+          "raw_sha256": "6bde47c05dc34494fe47bb34a2b18759d36793900fc5b6fab457e46da891d0ac",
+          "size": 424906
+        },
+        {
+          "path": "en/statdescriptions/offering_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/offering_skill_stat_descriptions.txt",
+          "sha256": "9e32c59f86c95a73517da68fa6bf190e97bcc7035d7d75dff731dfa573eb6733",
+          "raw_sha256": "9e32c59f86c95a73517da68fa6bf190e97bcc7035d7d75dff731dfa573eb6733",
+          "size": 37912
+        },
+        {
+          "path": "en/statdescriptions/passive_skill_aura_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/passive_skill_aura_stat_descriptions.txt",
+          "sha256": "62ede7b59ef0c30c283de1efeaf642207598159bcf7eb750ecb8cb0884a28f95",
+          "raw_sha256": "62ede7b59ef0c30c283de1efeaf642207598159bcf7eb750ecb8cb0884a28f95",
+          "size": 68832
+        },
+        {
+          "path": "en/statdescriptions/passive_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/passive_skill_stat_descriptions.txt",
+          "sha256": "df80e4ef75faf41e5bf821c38f5a0f00e32ed9b43246bdc5a6e12d7cea4dbd53",
+          "raw_sha256": "df80e4ef75faf41e5bf821c38f5a0f00e32ed9b43246bdc5a6e12d7cea4dbd53",
+          "size": 373868
+        },
+        {
+          "path": "en/statdescriptions/primordial_altar_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/primordial_altar_stat_descriptions.txt",
+          "sha256": "06434dd1a71a6a9e18b94cec873428935ead2ab3d7c43b0ee9319a6a5a92c431",
+          "raw_sha256": "06434dd1a71a6a9e18b94cec873428935ead2ab3d7c43b0ee9319a6a5a92c431",
+          "size": 395460
+        },
+        {
+          "path": "en/statdescriptions/sanctum_relic_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/sanctum_relic_stat_descriptions.txt",
+          "sha256": "d7fb3bae32956e09b6e894004b03d14bd9b91acc1d39b666ec5eeccdcebf461b",
+          "raw_sha256": "d7fb3bae32956e09b6e894004b03d14bd9b91acc1d39b666ec5eeccdcebf461b",
+          "size": 116118
+        },
+        {
+          "path": "en/statdescriptions/secondary_debuff_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/secondary_debuff_skill_stat_descriptions.txt",
+          "sha256": "6eceec0c5571200b9b453075bf8acc61ce7e74cb03a7a8b9ea7e85f7f57ddb24",
+          "raw_sha256": "6eceec0c5571200b9b453075bf8acc61ce7e74cb03a7a8b9ea7e85f7f57ddb24",
+          "size": 4258
+        },
+        {
+          "path": "en/statdescriptions/sentinel_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/sentinel_stat_descriptions.txt",
+          "sha256": "1272a91e824ab6178a340a23b077e42dc397cd3865a6116d05048b83b62bfb22",
+          "raw_sha256": "1272a91e824ab6178a340a23b077e42dc397cd3865a6116d05048b83b62bfb22",
+          "size": 362146
+        },
+        {
+          "path": "en/statdescriptions/single_minion_spell_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/single_minion_spell_skill_stat_descriptions.txt",
+          "sha256": "9aeeea7d70dbef6bc9edaa3f8c2acb8eea75cd702de990f8668228d5b99ef09d",
+          "raw_sha256": "9aeeea7d70dbef6bc9edaa3f8c2acb8eea75cd702de990f8668228d5b99ef09d",
+          "size": 137140
+        },
+        {
+          "path": "en/statdescriptions/skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/skill_stat_descriptions.txt",
+          "sha256": "2f5f2f85edd2c3c85687c8af3c3914064c238eb69f29c8653faf612ead03954c",
+          "raw_sha256": "2f5f2f85edd2c3c85687c8af3c3914064c238eb69f29c8653faf612ead03954c",
+          "size": 5284014
+        },
+        {
+          "path": "en/statdescriptions/skillpopup_stat_filters.txt",
+          "logical_path": "metadata/statdescriptions/skillpopup_stat_filters.txt",
+          "sha256": "d08512448a569dcb851305cafac79e2cadee4cb12c69f8a559d38762c69b5515",
+          "raw_sha256": "d08512448a569dcb851305cafac79e2cadee4cb12c69f8a559d38762c69b5515",
+          "size": 463316
+        },
+        {
+          "path": "en/statdescriptions/stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/stat_descriptions.txt",
+          "sha256": "ead9cdb492234b816419cb1b7c70feacb2fb356f4cb32e8ab68fa448bf6c382c",
+          "raw_sha256": "ead9cdb492234b816419cb1b7c70feacb2fb356f4cb32e8ab68fa448bf6c382c",
+          "size": 28323986
+        },
+        {
+          "path": "en/statdescriptions/tincture_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/tincture_stat_descriptions.txt",
+          "sha256": "0cbafc79be0f50f3d8000c55e202b36d4d6b38b6605c7059d776f3adf778f1c4",
+          "raw_sha256": "0cbafc79be0f50f3d8000c55e202b36d4d6b38b6605c7059d776f3adf778f1c4",
+          "size": 284738
+        },
+        {
+          "path": "en/statdescriptions/vaal_side_area_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/vaal_side_area_stat_descriptions.txt",
+          "sha256": "98d587a6496b69358b3f93d3bf83c2248c7dadf028ce4175b128e1926c1feaa2",
+          "raw_sha256": "98d587a6496b69358b3f93d3bf83c2248c7dadf028ce4175b128e1926c1feaa2",
+          "size": 296
+        },
+        {
+          "path": "en/statdescriptions/variable_duration_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/variable_duration_skill_stat_descriptions.txt",
+          "sha256": "fc456932ece30a3406c0b6bc5f655dcab1a053bea94086634662469a4e02bac2",
+          "raw_sha256": "fc456932ece30a3406c0b6bc5f655dcab1a053bea94086634662469a4e02bac2",
+          "size": 13208
+        },
+        {
+          "path": "en/statdescriptions/village_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/village_stat_descriptions.txt",
+          "sha256": "3f8d312876b2edda630a5bcd73b5a3e7f6f143ff3bc38ae6c3e22657c05e82c5",
+          "raw_sha256": "3f8d312876b2edda630a5bcd73b5a3e7f6f143ff3bc38ae6c3e22657c05e82c5",
+          "size": 140046
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "game": "poe1",
+      "adapter": "client-translation-snapshot",
+      "channel": "Cn",
+      "container": {
+        "name": "_.index.bin",
+        "size": 21244767,
+        "last_write_utc": "2026-10-30T14:16:00.3644981Z"
+      },
+      "schema": {
+        "filename": "schema-poe1.8c84cfbba60b.min.json",
+        "sha256": "3cfc97b937ecf6c12a6edbd98015069197cec8779e019228e96ea1355c10a320"
+      },
+      "inputs": [
+        {
+          "path": "zh-CN/gemeffects.csv",
+          "logical_path": "data/simplified chinese/gemeffects.datc64",
+          "sha256": "dfd75504bd9eb033607b70facf08a0cea761254385953c503eea75f22dfcd611",
+          "raw_sha256": "ed78de8a45a3c90dc6a61af374f819645a93b6d56feec45d8229aaefb0b0b0fa",
+          "size": 233861
+        },
+        {
+          "path": "zh-CN/skillgeminfo.csv",
+          "logical_path": "data/simplified chinese/skillgeminfo.datc64",
+          "sha256": "1fff3e3164398cb7dfa70de0340187bbf0625c29b63a46c259476615f4cf661d",
+          "raw_sha256": "a8f48f89e9f45796a31df15d714a34ac4455b67ea4e31bedc6972c2bd6aba3b6",
+          "size": 69487
+        },
+        {
+          "path": "zh-CN/words.csv",
+          "logical_path": "data/simplified chinese/words.datc64",
+          "sha256": "ebdca3f96bf5ab6ae74bde528007b2638a689f53e62bf94b0b17426dcc07cf73",
+          "raw_sha256": "151aefce4623eea3f4e33f62b904cfd8caa0dfc2c74d402c7a35f9b841a2e505",
+          "size": 356080
+        },
+        {
+          "path": "zh-CN/uniquestashlayout.csv",
+          "logical_path": "data/simplified chinese/uniquestashlayout.datc64",
+          "sha256": "1e7a5fcd10088fde92ae1d9bb36c480d9c6a94d48135ca21d7142b28a30deb92",
+          "raw_sha256": "bec9885d169420a00f6f3ff5b8fcd2158d7f451e913cb34c3d844fe13eb1fdd2",
+          "size": 115686
+        },
+        {
+          "path": "zh-CN/passiveskillmasteryeffects.csv",
+          "logical_path": "data/simplified chinese/passiveskillmasteryeffects.datc64",
+          "sha256": "ee8de37b1a86d6a09e491321cba602aaed082a90e5b318215df57b137d5f7efe",
+          "raw_sha256": "790dfce143ca1a77ef6d31f168c9eed49b16d12590c0bfbe8c9a97f68398d467",
+          "size": 23367
+        },
+        {
+          "path": "zh-CN/stats.csv",
+          "logical_path": "data/simplified chinese/stats.datc64",
+          "sha256": "140e8ac4e03e45598d87805a0b149d36dadb81410f77a139f51533e86885c5c6",
+          "raw_sha256": "dc2854c92c79d3fcbb0d31b59ed5aa668d3e8d90b95e6d833d10df5ab896ab4c",
+          "size": 3483028
+        },
+        {
+          "path": "zh-CN/statdescriptions/active_skill_gem_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/active_skill_gem_stat_descriptions.txt",
+          "sha256": "84b6c6c31f5f116e98a6c8850c8118d01fbf937ba0f9c44bc0f98492e3ec2c08",
+          "raw_sha256": "84b6c6c31f5f116e98a6c8850c8118d01fbf937ba0f9c44bc0f98492e3ec2c08",
+          "size": 908480
+        },
+        {
+          "path": "zh-CN/statdescriptions/advanced_mod_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/advanced_mod_stat_descriptions.txt",
+          "sha256": "e9ac83e863d2065d763ed3d281a1e0ec028c245c86910e39d6eb4ce9e2db3f33",
+          "raw_sha256": "e9ac83e863d2065d763ed3d281a1e0ec028c245c86910e39d6eb4ce9e2db3f33",
+          "size": 214892
+        },
+        {
+          "path": "zh-CN/statdescriptions/atlas_relic_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/atlas_relic_stat_descriptions.txt",
+          "sha256": "4b72142b76c9255ed13d4190712bc402a7409ab1fdd080e14ef7eef213e6e3fb",
+          "raw_sha256": "4b72142b76c9255ed13d4190712bc402a7409ab1fdd080e14ef7eef213e6e3fb",
+          "size": 10272
+        },
+        {
+          "path": "zh-CN/statdescriptions/atlas_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/atlas_stat_descriptions.txt",
+          "sha256": "47f4912bf67ce95f3c3e6cd0157ceda6c084be43a0b5d3c2c3aa5cdc599bdbbd",
+          "raw_sha256": "47f4912bf67ce95f3c3e6cd0157ceda6c084be43a0b5d3c2c3aa5cdc599bdbbd",
+          "size": 2904568
+        },
+        {
+          "path": "zh-CN/statdescriptions/aura_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/aura_skill_stat_descriptions.txt",
+          "sha256": "5ba5436d8463cf2b05a4b22f565a60ff82130266d20c6daa067183535e8883aa",
+          "raw_sha256": "5ba5436d8463cf2b05a4b22f565a60ff82130266d20c6daa067183535e8883aa",
+          "size": 243042
+        },
+        {
+          "path": "zh-CN/statdescriptions/banner_aura_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/banner_aura_skill_stat_descriptions.txt",
+          "sha256": "d92671f6df4766ef3353eef30fa00dc05c932f0ec04db7dde889123942e96d32",
+          "raw_sha256": "d92671f6df4766ef3353eef30fa00dc05c932f0ec04db7dde889123942e96d32",
+          "size": 53134
+        },
+        {
+          "path": "zh-CN/statdescriptions/beam_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/beam_skill_stat_descriptions.txt",
+          "sha256": "e26f480160400212b606d89a7a8592ee6564a14b55e606614622a0b2afd3dd30",
+          "raw_sha256": "e26f480160400212b606d89a7a8592ee6564a14b55e606614622a0b2afd3dd30",
+          "size": 10384
+        },
+        {
+          "path": "zh-CN/statdescriptions/brand_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/brand_skill_stat_descriptions.txt",
+          "sha256": "197f1e08e34ceea0bff534877b906cd67ea5df4ff3ffdb4eb362cc281c613b9a",
+          "raw_sha256": "197f1e08e34ceea0bff534877b906cd67ea5df4ff3ffdb4eb362cc281c613b9a",
+          "size": 33026
+        },
+        {
+          "path": "zh-CN/statdescriptions/buff_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/buff_skill_stat_descriptions.txt",
+          "sha256": "8b7442aa42c78fffefed09f8cec4f2d9e81cd2eec1cdd2d80b749e6ed3a93ce8",
+          "raw_sha256": "8b7442aa42c78fffefed09f8cec4f2d9e81cd2eec1cdd2d80b749e6ed3a93ce8",
+          "size": 162260
+        },
+        {
+          "path": "zh-CN/statdescriptions/chest_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/chest_stat_descriptions.txt",
+          "sha256": "09a39be0d4b379e6eb6bcc0754f00162101527a7bfdebb1b83dfcbd8778f61f6",
+          "raw_sha256": "09a39be0d4b379e6eb6bcc0754f00162101527a7bfdebb1b83dfcbd8778f61f6",
+          "size": 195204
+        },
+        {
+          "path": "zh-CN/statdescriptions/curse_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/curse_skill_stat_descriptions.txt",
+          "sha256": "93c1b60adeddcf3ddae7ca2d9b0d25729f1084faf8cc1ea9a24856b46a6e15ad",
+          "raw_sha256": "93c1b60adeddcf3ddae7ca2d9b0d25729f1084faf8cc1ea9a24856b46a6e15ad",
+          "size": 215374
+        },
+        {
+          "path": "zh-CN/statdescriptions/debuff_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/debuff_skill_stat_descriptions.txt",
+          "sha256": "083067f4dfa4c60f047b10889664fdf54bf5b795febbf493f7767c1a55064abb",
+          "raw_sha256": "083067f4dfa4c60f047b10889664fdf54bf5b795febbf493f7767c1a55064abb",
+          "size": 64696
+        },
+        {
+          "path": "zh-CN/statdescriptions/deepwater_applied_adjacent_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/deepwater_applied_adjacent_stat_descriptions.txt",
+          "sha256": "66e802d04e6d892835dcf8b3d1e6a5da072085b58b97b7b8ce4fd2a7c3e970b7",
+          "raw_sha256": "66e802d04e6d892835dcf8b3d1e6a5da072085b58b97b7b8ce4fd2a7c3e970b7",
+          "size": 7438
+        },
+        {
+          "path": "zh-CN/statdescriptions/deepwater_explicit_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/deepwater_explicit_stat_descriptions.txt",
+          "sha256": "2b952cc720eeb3fcfaa6f4adda91fab7625e2ed4855051377196acf1436a0d67",
+          "raw_sha256": "2b952cc720eeb3fcfaa6f4adda91fab7625e2ed4855051377196acf1436a0d67",
+          "size": 65756
+        },
+        {
+          "path": "zh-CN/statdescriptions/deepwater_implicit_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/deepwater_implicit_stat_descriptions.txt",
+          "sha256": "758c120b1056bf6b97f85924aa9c981470d018a12f3890b0568d162c31bef124",
+          "raw_sha256": "758c120b1056bf6b97f85924aa9c981470d018a12f3890b0568d162c31bef124",
+          "size": 205636
+        },
+        {
+          "path": "zh-CN/statdescriptions/deepwater_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/deepwater_stat_descriptions.txt",
+          "sha256": "276bef9e6e4f39e2f5f0023fdd8cc5dd10d0fb07a7ec86c2f3afed28774beec0",
+          "raw_sha256": "276bef9e6e4f39e2f5f0023fdd8cc5dd10d0fb07a7ec86c2f3afed28774beec0",
+          "size": 418
+        },
+        {
+          "path": "zh-CN/statdescriptions/expedition_relic_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/expedition_relic_stat_descriptions.txt",
+          "sha256": "217ae85d9fbb0f80a22110d055856f5507b511535a639863c8e51b05be72bf1d",
+          "raw_sha256": "217ae85d9fbb0f80a22110d055856f5507b511535a639863c8e51b05be72bf1d",
+          "size": 434958
+        },
+        {
+          "path": "zh-CN/statdescriptions/gem_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/gem_stat_descriptions.txt",
+          "sha256": "cc29ecd40c6bf7f102509746a1f7626afd710e5a4fab439d36a76077a385f7f6",
+          "raw_sha256": "cc29ecd40c6bf7f102509746a1f7626afd710e5a4fab439d36a76077a385f7f6",
+          "size": 2786178
+        },
+        {
+          "path": "zh-CN/statdescriptions/graft_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/graft_stat_descriptions.txt",
+          "sha256": "77137669ed55d74c21c50541ea39951d4d0cb0ad8b6ebabfba077c9844c7c138",
+          "raw_sha256": "77137669ed55d74c21c50541ea39951d4d0cb0ad8b6ebabfba077c9844c7c138",
+          "size": 354902
+        },
+        {
+          "path": "zh-CN/statdescriptions/heist_equipment_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/heist_equipment_stat_descriptions.txt",
+          "sha256": "a7882977a71489c4db89d69c717cfb5f14717ad92e156a0f9639ef334c168b7c",
+          "raw_sha256": "a7882977a71489c4db89d69c717cfb5f14717ad92e156a0f9639ef334c168b7c",
+          "size": 318530
+        },
+        {
+          "path": "zh-CN/statdescriptions/leaguestone_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/leaguestone_stat_descriptions.txt",
+          "sha256": "131b7db3eb6568bd70c41f6d4fc88a6aed53ec45a874199e631a4030ca2ad6b9",
+          "raw_sha256": "131b7db3eb6568bd70c41f6d4fc88a6aed53ec45a874199e631a4030ca2ad6b9",
+          "size": 492212
+        },
+        {
+          "path": "zh-CN/statdescriptions/map_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/map_stat_descriptions.txt",
+          "sha256": "6ae897261d41a076338eaeb95bc0034245b4c01b41b08579f675bfb3422adcad",
+          "raw_sha256": "6ae897261d41a076338eaeb95bc0034245b4c01b41b08579f675bfb3422adcad",
+          "size": 540896
+        },
+        {
+          "path": "zh-CN/statdescriptions/mercenary_support_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/mercenary_support_stat_descriptions.txt",
+          "sha256": "09109f448035789d88c4cbca4a87330f1dd379a2206f7efd4c85ad7a6d1a53d1",
+          "raw_sha256": "09109f448035789d88c4cbca4a87330f1dd379a2206f7efd4c85ad7a6d1a53d1",
+          "size": 159272
+        },
+        {
+          "path": "zh-CN/statdescriptions/minion_attack_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/minion_attack_skill_stat_descriptions.txt",
+          "sha256": "41092521c20fd9c8b0177ee0d05ff35a8036896c48f92a4e1702278bee8cb925",
+          "raw_sha256": "41092521c20fd9c8b0177ee0d05ff35a8036896c48f92a4e1702278bee8cb925",
+          "size": 639438
+        },
+        {
+          "path": "zh-CN/statdescriptions/minion_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/minion_skill_stat_descriptions.txt",
+          "sha256": "36c4d420ef9af6f6475b8b7e69b22af6111855064da47e388197a36c6f097f35",
+          "raw_sha256": "36c4d420ef9af6f6475b8b7e69b22af6111855064da47e388197a36c6f097f35",
+          "size": 1106856
+        },
+        {
+          "path": "zh-CN/statdescriptions/minion_spell_damage_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/minion_spell_damage_skill_stat_descriptions.txt",
+          "sha256": "ffd14ba565a578a5a8bced665e6317713ced86a6ec807956c9d1782ff03b6b39",
+          "raw_sha256": "ffd14ba565a578a5a8bced665e6317713ced86a6ec807956c9d1782ff03b6b39",
+          "size": 357084
+        },
+        {
+          "path": "zh-CN/statdescriptions/minion_spell_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/minion_spell_skill_stat_descriptions.txt",
+          "sha256": "1ea6abc7550c4eff2f2459fdbb3d2e34495d4750ea12d57abd4df049cbd94b01",
+          "raw_sha256": "1ea6abc7550c4eff2f2459fdbb3d2e34495d4750ea12d57abd4df049cbd94b01",
+          "size": 28000
+        },
+        {
+          "path": "zh-CN/statdescriptions/mirage_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/mirage_stat_descriptions.txt",
+          "sha256": "4c6fd8251954d3f0631f827be09b7966edb1ab526aa1495ec769972e4c9b7432",
+          "raw_sha256": "4c6fd8251954d3f0631f827be09b7966edb1ab526aa1495ec769972e4c9b7432",
+          "size": 144982
+        },
+        {
+          "path": "zh-CN/statdescriptions/monster_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/monster_stat_descriptions.txt",
+          "sha256": "a25091eaeb6e0f810682df75e847ab5476afe0d9c0765b9823a6f976cad3a07b",
+          "raw_sha256": "a25091eaeb6e0f810682df75e847ab5476afe0d9c0765b9823a6f976cad3a07b",
+          "size": 41986
+        },
+        {
+          "path": "zh-CN/statdescriptions/necropolis_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/necropolis_stat_descriptions.txt",
+          "sha256": "b2e149e66ae7e9a934898e13fa95a7e5690eee0f641450d3085c0c62f607927a",
+          "raw_sha256": "b2e149e66ae7e9a934898e13fa95a7e5690eee0f641450d3085c0c62f607927a",
+          "size": 446384
+        },
+        {
+          "path": "zh-CN/statdescriptions/offering_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/offering_skill_stat_descriptions.txt",
+          "sha256": "2e8f02c666e9ab039fb40cace3e84ab3ec2af34100054a265b7c17ee24fcca75",
+          "raw_sha256": "2e8f02c666e9ab039fb40cace3e84ab3ec2af34100054a265b7c17ee24fcca75",
+          "size": 40024
+        },
+        {
+          "path": "zh-CN/statdescriptions/passive_skill_aura_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/passive_skill_aura_stat_descriptions.txt",
+          "sha256": "98f51558c09a56b2e8e30209d3ec7c49b8c604d418f1ff5e6b9e580073ee4f70",
+          "raw_sha256": "98f51558c09a56b2e8e30209d3ec7c49b8c604d418f1ff5e6b9e580073ee4f70",
+          "size": 73086
+        },
+        {
+          "path": "zh-CN/statdescriptions/passive_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/passive_skill_stat_descriptions.txt",
+          "sha256": "d69d925f24ad3d99579565c3b08223b6eefd521128ce2a0241403906a44f3b05",
+          "raw_sha256": "d69d925f24ad3d99579565c3b08223b6eefd521128ce2a0241403906a44f3b05",
+          "size": 400706
+        },
+        {
+          "path": "zh-CN/statdescriptions/primordial_altar_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/primordial_altar_stat_descriptions.txt",
+          "sha256": "0b60d5a521ad7929a5ee549ac5ae7cc40892c6152cca06698778838fbe47809d",
+          "raw_sha256": "0b60d5a521ad7929a5ee549ac5ae7cc40892c6152cca06698778838fbe47809d",
+          "size": 419748
+        },
+        {
+          "path": "zh-CN/statdescriptions/sanctum_relic_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/sanctum_relic_stat_descriptions.txt",
+          "sha256": "adc91baaf179b9971d385899496c420b63601caa7e889709b00b20a778f86585",
+          "raw_sha256": "adc91baaf179b9971d385899496c420b63601caa7e889709b00b20a778f86585",
+          "size": 123830
+        },
+        {
+          "path": "zh-CN/statdescriptions/secondary_debuff_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/secondary_debuff_skill_stat_descriptions.txt",
+          "sha256": "238446b324a1487f789e366074a13ea8785f357d70f51f377dfa1a3e9f97f31f",
+          "raw_sha256": "238446b324a1487f789e366074a13ea8785f357d70f51f377dfa1a3e9f97f31f",
+          "size": 4376
+        },
+        {
+          "path": "zh-CN/statdescriptions/sentinel_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/sentinel_stat_descriptions.txt",
+          "sha256": "3e004ea4c7bf5d1753f69e5556b633b1b155b93147505763f519761ddb6836b5",
+          "raw_sha256": "3e004ea4c7bf5d1753f69e5556b633b1b155b93147505763f519761ddb6836b5",
+          "size": 382076
+        },
+        {
+          "path": "zh-CN/statdescriptions/single_minion_spell_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/single_minion_spell_skill_stat_descriptions.txt",
+          "sha256": "d5b04897d7b5fa14307d0b844b58495320405f759452697ecef03158a02e101e",
+          "raw_sha256": "d5b04897d7b5fa14307d0b844b58495320405f759452697ecef03158a02e101e",
+          "size": 144182
+        },
+        {
+          "path": "zh-CN/statdescriptions/skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/skill_stat_descriptions.txt",
+          "sha256": "d5df44c6c10e3580df8752278c5205f4acae74e542d4f8b94d529904c0f1f613",
+          "raw_sha256": "d5df44c6c10e3580df8752278c5205f4acae74e542d4f8b94d529904c0f1f613",
+          "size": 5587680
+        },
+        {
+          "path": "zh-CN/statdescriptions/skillpopup_stat_filters.txt",
+          "logical_path": "metadata/statdescriptions/skillpopup_stat_filters.txt",
+          "sha256": "d08512448a569dcb851305cafac79e2cadee4cb12c69f8a559d38762c69b5515",
+          "raw_sha256": "d08512448a569dcb851305cafac79e2cadee4cb12c69f8a559d38762c69b5515",
+          "size": 463316
+        },
+        {
+          "path": "zh-CN/statdescriptions/stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/stat_descriptions.txt",
+          "sha256": "2035db83a2dd818d24bbe3f722a4ebec04c2715962df4dc47c5e2e6177493941",
+          "raw_sha256": "2035db83a2dd818d24bbe3f722a4ebec04c2715962df4dc47c5e2e6177493941",
+          "size": 29990764
+        },
+        {
+          "path": "zh-CN/statdescriptions/tincture_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/tincture_stat_descriptions.txt",
+          "sha256": "5a7d4d6e039728259df5673f1ed6d74e62f5e2c730a6109464d4fe112cbb099b",
+          "raw_sha256": "5a7d4d6e039728259df5673f1ed6d74e62f5e2c730a6109464d4fe112cbb099b",
+          "size": 300456
+        },
+        {
+          "path": "zh-CN/statdescriptions/vaal_side_area_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/vaal_side_area_stat_descriptions.txt",
+          "sha256": "98d587a6496b69358b3f93d3bf83c2248c7dadf028ce4175b128e1926c1feaa2",
+          "raw_sha256": "98d587a6496b69358b3f93d3bf83c2248c7dadf028ce4175b128e1926c1feaa2",
+          "size": 296
+        },
+        {
+          "path": "zh-CN/statdescriptions/variable_duration_skill_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/variable_duration_skill_stat_descriptions.txt",
+          "sha256": "c3478db9de3d8d550c99e07693e4d19108f83d24ef304668d30f03aedf58150c",
+          "raw_sha256": "c3478db9de3d8d550c99e07693e4d19108f83d24ef304668d30f03aedf58150c",
+          "size": 13638
+        },
+        {
+          "path": "zh-CN/statdescriptions/village_stat_descriptions.txt",
+          "logical_path": "metadata/statdescriptions/village_stat_descriptions.txt",
+          "sha256": "a75a14a5f9e8816f994480ba87912e90fbd901f502e966e938fa1c25e59cf80f",
+          "raw_sha256": "a75a14a5f9e8816f994480ba87912e90fbd901f502e966e938fa1c25e59cf80f",
+          "size": 151282
+        }
+      ]
+    }
+  ],
+  "supportReminderSource": {
+    "datasetId": "poe1-client-localized-names-3.29.3.1.2-3.29.2b",
+    "artifact": {
+      "media_type": "application/x-ndjson",
+      "path": "localized-names.v1.jsonl",
+      "records": 60589,
+      "sha256": "1967b7ed7854c6e4de98c78e61416feef14b2def869cf74013302d1aadca3bf5",
+      "size": 53136632
+    }
+  },
+  "counts": {
+    "supportDescriptions": 180,
+    "uniqueNames": 1383,
+    "statRules": 19856
+  },
+  "normalizedDisplayNames": 1172,
+  "siteAliases": [
+    {
+      "statId": "base_reduce_enemy_cold_resistance_%",
+      "sourceFile": "skill_stat_descriptions.txt",
+      "clientTemplate": "Penetrates {0}% Cold Resistance",
+      "siteTemplate": "Penetrates {0}% to Cold Resistance",
+      "source": "https://mobalytics.gg/poe/builds/fubgun-winter-orb-elementalist",
+      "reason": "Support tooltip uses the resistance property wording with an extra 'to'."
+    }
+  ],
+  "diagnostics": {
+    "stat_descriptions.txt": {
+      "compiled": 15384,
+      "skipped": {
+        "unsupported transform: times_twenty": 6,
+        "unsupported markup": 98,
+        "Simplified Chinese: unsupported markup": 431,
+        "unsupported transform: canonical_stat": 8,
+        "unsupported transform: divide_by_one_hundred_2dp_if_required": 6,
+        "unsupported transform: display_indexable_support": 2,
+        "unsupported transform: milliseconds_to_seconds_2dp_if_required": 29,
+        "unsupported transform: milliseconds_to_seconds_2dp": 10,
+        "unsupported transform: deciseconds_to_seconds": 3,
+        "unsupported transform: old_leech_percent": 14,
+        "unsupported transform: locations_to_metres": 81,
+        "unsupported transform: old_leech_permyriad": 11,
+        "unsupported transform: times_one_point_five": 1,
+        "unsupported transform: 30%_of_value": 2,
+        "unsupported transform: display_indexable_skill": 2,
+        "unsupported transform: divide_by_one_thousand": 5,
+        "unsupported transform: divide_by_twelve": 2,
+        "unsupported transform: divide_by_six": 1,
+        "unsupported transform: per_minute_to_per_second_2dp_if_required": 17,
+        "unsupported transform: 60%_of_value": 2,
+        "unsupported transform: per_minute_to_per_second_0dp": 2,
+        "unsupported transform: milliseconds_to_seconds_0dp": 4,
+        "unsupported transform: mod_value_to_item_class": 1,
+        "no unambiguous aligned locale": 12,
+        "Traditional Chinese: placeholder outside stat tuple": 2,
+        "unsupported transform: multiplicative_damage_modifier": 1,
+        "unsupported transform: divide_by_one_hundred_2dp": 2,
+        "unsupported transform: per_minute_to_per_second_1dp": 4,
+        "unsupported transform: divide_by_ten_1dp": 2,
+        "unsupported transform: milliseconds_to_seconds_1dp": 4,
+        "unsupported transform: per_minute_to_per_second_2dp": 6,
+        "Traditional Chinese: unsupported markup": 1,
+        "unsupported transform: plus_two_hundred": 1,
+        "unsupported transform: divide_by_ten_0dp": 4,
+        "unsupported transform: divide_by_one_hundred_and_negate": 1,
+        "unsupported transform: permyriad_per_minute_to_%_per_second": 2,
+        "unsupported transform: tree_expansion_jewel_passive": 1,
+        "unsupported transform: display_indexable_non_active_support": 8,
+        "unsupported transform: passive_hash": 9,
+        "unsupported transform: affliction_reward_type": 9,
+        "unsupported transform: divide_by_five": 4,
+        "unsupported transform: divide_by_two_0dp": 6,
+        "unsupported transform: divide_by_fifteen_0dp": 1,
+        "unsupported transform: divide_by_three": 1,
+        "unsupported transform: divide_by_twenty_then_double_0dp": 1,
+        "unsupported transform: divide_by_twenty": 1,
+        "unsupported transform: weapon_tree_unique_base_type_name": 1,
+        "unsupported transform: divide_by_four": 1
+      }
+    },
+    "skill_stat_descriptions.txt": {
+      "compiled": 2691,
+      "skipped": {
+        "unsupported transform: milliseconds_to_seconds_2dp_if_required": 55,
+        "unsupported transform: milliseconds_to_seconds_2dp": 42,
+        "unsupported transform: locations_to_metres": 196,
+        "unsupported transform: divide_by_one_hundred_and_negate": 6,
+        "unsupported transform: per_minute_to_per_second_2dp_if_required": 1,
+        "unsupported transform: divide_by_one_hundred_2dp": 3,
+        "conditions": 19,
+        "unsupported transform: multiplicative_damage_modifier": 4,
+        "unsupported transform: milliseconds_to_seconds_1dp": 10,
+        "no unambiguous aligned locale": 2,
+        "unsupported transform: divide_by_one_hundred_1dp": 1,
+        "unsupported transform: divide_by_one_thousand": 2,
+        "unsupported transform: milliseconds_to_seconds_0dp": 2,
+        "unsupported markup": 24,
+        "unsupported transform: invert_chance": 1,
+        "unsupported transform: multiply_by_four": 1,
+        "unsupported transform: divide_by_one_hundred_2dp_if_required": 3,
+        "unsupported transform: divide_by_two_0dp": 2,
+        "unsupported transform: per_minute_to_per_second_0dp": 1
+      }
+    },
+    "gem_stat_descriptions.txt": {
+      "compiled": 1259,
+      "skipped": {
+        "unsupported transform: locations_to_metres": 16,
+        "unsupported transform: milliseconds_to_seconds_2dp": 11,
+        "unsupported transform: milliseconds_to_seconds_2dp_if_required": 22,
+        "conditions": 8,
+        "unsupported markup": 5,
+        "unsupported transform: milliseconds_to_seconds_0dp": 1,
+        "unsupported transform: milliseconds_to_seconds_1dp": 7
+      }
+    },
+    "active_skill_gem_stat_descriptions.txt": {
+      "compiled": 557,
+      "skipped": {
+        "unsupported transform: milliseconds_to_seconds_2dp": 23,
+        "unsupported transform: multiplicative_damage_modifier": 3,
+        "unsupported transform: divide_by_one_hundred_and_negate": 1,
+        "conditions": 5,
+        "unsupported transform: milliseconds_to_seconds_2dp_if_required": 6,
+        "unsupported markup": 3,
+        "unsupported transform: divide_by_one_hundred_2dp_if_required": 5,
+        "unsupported transform: milliseconds_to_seconds_1dp": 1
+      }
+    },
+    "passive_skill_stat_descriptions.txt": {
+      "compiled": 159,
+      "skipped": {
+        "unsupported markup": 2
+      }
+    },
+    "aura_skill_stat_descriptions.txt": {
+      "compiled": 123,
+      "skipped": {
+        "unsupported transform: per_minute_to_per_second_2dp": 1
+      }
+    },
+    "buff_skill_stat_descriptions.txt": {
+      "compiled": 86,
+      "skipped": {}
+    },
+    "curse_skill_stat_descriptions.txt": {
+      "compiled": 107,
+      "skipped": {
+        "unsupported transform: milliseconds_to_seconds_2dp": 2
+      }
+    }
+  },
+  "limitations": [
+    "Only supported stat AST conditions/formatters/linear transforms are compiled; unsupported directives are reported and skipped",
+    "CN branches whose English semantics differ from the international snapshot are skipped",
+    "Client snapshots may contain user-modified locale text; known trailing display annotations are removed from unique names",
+    "Canvas text rendering is not established by this dataset; DOM tree effects and tooltips use the same stat translator"
+  ]
+}

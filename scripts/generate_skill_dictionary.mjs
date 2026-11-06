@@ -1,71 +1,66 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { FileBlob, SpreadsheetFile } from "@oai/artifact-tool";
 
-const sourcePath =
+const releasePath =
   process.argv[2] ??
-  "C:/Users/hanpe/Desktop/poe-trans-data/data/poe1/output/poe1_skill_gem_names_trilingual.xlsx";
-const outputPath =
-  process.argv[3] ?? "data/poe1-skill-gems.js";
-const indexPath =
-  process.argv[4] ?? path.join(path.dirname(sourcePath), "gems_index.json");
+  "C:/Users/hanpe/Desktop/poe-client-data/dist/current/domains/localized-names/localized-names.v1.jsonl";
+const outputPath = process.argv[3] ?? "data/poe1-skill-gems.js";
+const keysPath = process.argv[4] ?? "data/poe1-skill-gem-keys.json";
+const overlayPath = process.argv[5] ?? "data/poe1-skill-gems.overlay.json";
 
-const input = await FileBlob.load(sourcePath);
-const workbook = await SpreadsheetFile.importXlsx(input);
-const worksheet = workbook.worksheets.getItem("技能宝石名称");
-const rows = worksheet.getUsedRange(true).values;
+const records = (await fs.readFile(releasePath, "utf8"))
+  .split(/\r?\n/)
+  .filter(Boolean)
+  .map((line) => JSON.parse(line))
+  // Transfigured gems are named by ActiveSkills rather than BaseItemTypes,
+  // so the downstream projection key is authoritative and category is not.
+  .filter((record) => record.game === "poe1");
+const keys = JSON.parse(await fs.readFile(keysPath, "utf8"));
+const overlay = JSON.parse(await fs.readFile(overlayPath, "utf8"));
 
-const [headers, ...dataRows] = rows;
-const expectedHeaders = ["简体中文", "English", "繁體中文"];
-if (JSON.stringify(headers) !== JSON.stringify(expectedHeaders)) {
-  throw new Error(
-    `词表表头不符合预期：${JSON.stringify(headers)}，预期 ${JSON.stringify(expectedHeaders)}`
+const candidates = new Map();
+for (const record of records) {
+  const name = record.names.en;
+  if (!candidates.has(name)) candidates.set(name, []);
+  candidates.get(name).push({
+    category: record.category,
+    entityId: record.entity_id,
+    en: name,
+    zhCN: record.names["zh-CN"],
+    zhTW: record.names["zh-TW"]
+  });
+}
+const overlayByEnglish = new Map(overlay.map((entry) => [entry.en, entry]));
+
+const entries = keys.map((name) => {
+  const overridden = overlayByEnglish.get(name);
+  if (overridden) return overridden;
+  const options = candidates.get(name) ?? [];
+  const complete = options.filter((entry) => entry.zhCN && entry.zhTW);
+  const baseGems = complete.filter(
+    (entry) => entry.category === "gem" && !/Royale/i.test(entry.entityId)
   );
-}
-
-const workbookEntries = dataRows
-  .filter((row) => row.every((value) => typeof value === "string" && value.trim()))
-  .map(([zhCN, en, zhTW]) => ({
-    en: en.trim(),
-    zhCN: zhCN.trim(),
-    zhTW: zhTW.trim()
-  }));
-
-const index = JSON.parse(await fs.readFile(indexPath, "utf8"));
-const indexEntries = Object.values(index)
-  .filter((gem) => gem.name_en && gem.name_zh && gem.name_tw)
-  .map((gem) => ({
-    en: gem.name_en.trim(),
-    zhCN: gem.name_zh.trim(),
-    zhTW: gem.name_tw.trim()
-  }));
-
-const indexByEnglish = new Map(indexEntries.map((entry) => [entry.en, entry]));
-for (const workbookEntry of workbookEntries) {
-  const indexed = indexByEnglish.get(workbookEntry.en);
-  if (!indexed) {
-    throw new Error(`完整索引缺少 Excel 词条：${workbookEntry.en}`);
+  const activeSkills = complete.filter((entry) => entry.category === "skill");
+  const uniqueProjection = (source) => {
+    const projected = source.map(({ en, zhCN, zhTW }) => ({ en, zhCN, zhTW }));
+    return new Map(projected.map((entry) => [JSON.stringify(entry), entry]));
+  };
+  let unique = uniqueProjection(baseGems);
+  if (unique.size !== 1) {
+    const skillCandidates = uniqueProjection(activeSkills);
+    if (skillCandidates.size === 1) unique = skillCandidates;
   }
-  if (
-    indexed.zhCN !== workbookEntry.zhCN ||
-    indexed.zhTW !== workbookEntry.zhTW
-  ) {
-    throw new Error(`Excel 与完整索引翻译不一致：${workbookEntry.en}`);
+  if (unique.size !== 1) {
+    throw new Error(
+      `${name}: expected one complete client candidate, found ${unique.size}; add an explicit overlay`
+    );
   }
-}
+  return [...unique.values()][0];
+});
 
-const entries = indexEntries.sort((left, right) =>
-  left.en.localeCompare(right.en, "en")
-);
-
-const englishNames = new Set();
-const duplicates = [];
-for (const entry of entries) {
-  if (englishNames.has(entry.en)) duplicates.push(entry.en);
-  englishNames.add(entry.en);
-}
-if (duplicates.length) {
-  throw new Error(`发现重复英文名称：${[...new Set(duplicates)].join(", ")}`);
+const unusedOverlays = [...overlayByEnglish.keys()].filter((name) => !keys.includes(name));
+if (unusedOverlays.length) {
+  throw new Error(`overlay contains names outside the projection: ${unusedOverlays.join(", ")}`);
 }
 
 const body = [
@@ -82,6 +77,6 @@ const body = [
 await fs.mkdir(path.dirname(outputPath), { recursive: true });
 await fs.writeFile(outputPath, body, "utf8");
 console.log(
-  `已生成 ${entries.length} 条技能石词条` +
-  `（Excel 校验 ${workbookEntries.length} 条）：${outputPath}`
+  `已从 poe-client-data 生成 ${entries.length} 条技能石词条` +
+  `（显式 overlay ${overlay.length} 条）：${outputPath}`
 );

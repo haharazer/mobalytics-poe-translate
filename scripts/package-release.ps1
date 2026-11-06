@@ -19,8 +19,12 @@ if (-not $stagingRoot.StartsWith($releaseRoot + [System.IO.Path]::DirectorySepar
 $runtimeFiles = @(
   "manifest.json",
   "src\translation-core.js",
+  "src\stat-translation.js",
+  "src\page-context.js",
   "src\content.js",
   "data\poe1-skill-gems.js",
+  "data\poe1-core.js",
+  "data\poe1-extended.js",
   "popup\popup.html",
   "popup\popup.css",
   "popup\popup.js",
@@ -57,7 +61,15 @@ if (Test-Path -LiteralPath $archivePath) {
 Compress-Archive -Path (Join-Path $stagingRoot "*") -DestinationPath $archivePath `
   -CompressionLevel Optimal
 
-$hash = (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant()
+$archiveStream = [System.IO.File]::OpenRead($archivePath)
+$hashAlgorithm = [System.Security.Cryptography.SHA256]::Create()
+try {
+  $hash = [System.BitConverter]::ToString($hashAlgorithm.ComputeHash($archiveStream)).Replace("-", "").ToLowerInvariant()
+}
+finally {
+  $archiveStream.Dispose()
+  $hashAlgorithm.Dispose()
+}
 $checksum = "$hash  $([System.IO.Path]::GetFileName($archivePath))`n"
 $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 [System.IO.File]::WriteAllText($checksumPath, $checksum, $utf8NoBom)

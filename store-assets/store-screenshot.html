@@ -212,6 +212,7 @@
 
       .equipment {
         display: grid;
+        width: calc(100% - 310px);
         margin-top: 10px;
         grid-template-columns: 1fr 1fr;
         gap: 9px;
@@ -289,6 +290,7 @@
       }
 
       .guide-note {
+        width: calc(100% - 310px);
         margin-top: 10px;
         padding: 10px 15px;
         border-left: 3px solid #6f50ee;
@@ -437,7 +439,7 @@
       .launcher {
         position: absolute;
         right: 18px;
-        bottom: 250px;
+        bottom: 460px;
         display: grid;
         width: 48px;
         height: 48px;
@@ -480,6 +482,14 @@
         font-size: 12px;
         font-weight: 900;
       }
+
+      .sample { display: block; min-height: 132px; }
+      .sample-label { margin-bottom: 10px; color: #a58eff; font-size: 11px; }
+      .sample strong { display: block; color: #eff2f8; font-size: 14px; }
+      .sample small { display: block; margin-top: 4px; color: #788196; font-size: 9px; }
+      .sample p { margin: 10px 0 0; font-size: 12px; line-height: 1.6; color: #c5c0eb; }
+      .category-row { display: flex; justify-content: space-between; margin-top: 5px; padding: 6px 9px; border: 1px solid #292d40; border-radius: 7px; color: #aeb4c2; font-size: 10px; }
+      .category-row span:last-child { color: #a58eff; }
     </style>
   </head>
   <body>
@@ -489,10 +499,10 @@
           <img src="../icons/icon-128.png" alt="">
           <div>
             <h1>Mobalytics PoE 中文化</h1>
-            <p class="subtitle">技能石名称，一键切换简体、繁體或中英双语</p>
+            <p class="subtitle">技能说明、传奇装备、数值词缀与天赋效果，一键中文化</p>
           </div>
         </div>
-        <div class="count">812 条 PoE 1 词条</div>
+        <div class="count">v0.3.2 · 六类独立开关</div>
       </header>
 
       <section class="browser">
@@ -514,7 +524,7 @@
 
           <article class="guide">
             <div class="breadcrumbs">Path of Exile / Builds / Elementalist</div>
-            <h2 class="build-title">Cold Dot Wintertide Brand Elementalist</h2>
+            <h2 class="build-title">PoE 1 核心内容翻译 · 界面示意</h2>
             <div class="meta">
               <span class="tag">Starter</span>
               <span class="tag">End Game</span>
@@ -522,7 +532,7 @@
             </div>
 
             <div class="section-head">
-              <h3>技能 Skills</h3>
+              <h3>技能与游戏数据</h3>
               <div class="variants">
                 <span class="variant active">Act 1</span>
                 <span class="variant">Act 2</span>
@@ -564,38 +574,26 @@
                 </div>
               </div>
 
-              <div class="socket-group">
-                <div class="item"><div class="shield"></div></div>
-                <div class="gems">
-                  <div class="gem blue">
-                    <strong>冰霜闪现</strong>
-                    <span>Frostblink</span>
-                  </div>
-                  <div class="gem blue">
-                    <strong>清晰</strong>
-                    <span>Clarity</span>
-                  </div>
-                </div>
+              <div class="socket-group sample">
+                <div class="sample-label">传奇装备 · 数值词缀</div>
+                <strong>群魔殿</strong>
+                <small>The Pandemonius</small>
+                <p>词缀示例：+(35-40)% 火焰抗性</p>
+                <small>+(35-40)% to Fire Resistance</small>
               </div>
 
-              <div class="socket-group">
-                <div class="item"><div class="wand"></div></div>
-                <div class="gems">
-                  <div class="gem blue">
-                    <strong>圣焰图腾</strong>
-                    <span>Holy Flame Totem</span>
-                  </div>
-                  <div class="gem blue">
-                    <strong>烈焰之墙</strong>
-                    <span>Flame Wall</span>
-                  </div>
-                </div>
+              <div class="socket-group sample">
+                <div class="sample-label">天赋效果 · 专精选项</div>
+                <strong>5% 的偷取立即生效</strong>
+                <small>5% of Leech is Instant</small>
+                <p>技能的魔力保留效能提高 12%</p>
+                <small>12% increased Mana Reservation Efficiency of Skills</small>
               </div>
             </div>
 
             <div class="guide-note">
-              切换 Build Variant 后，新出现的技能石会自动中文化。页面原始内容与
-              英文名称均可随时恢复。
+              动态提示与数值范围自动匹配，保留游戏原始数值。未识别的规则显示英文，
+              随时切换简体、繁體、双语或恢复原文。
             </div>
 
             <div class="launcher">译</div>
@@ -603,7 +601,7 @@
               <div class="panel-header">
                 <div>
                   <p class="eyebrow">MOBALYTICS · POE 1</p>
-                  <h4>技能石中文化</h4>
+                  <h4>PoE 核心内容中文化</h4>
                 </div>
                 <span class="close">×</span>
               </div>
@@ -621,6 +619,12 @@
                   </div>
                   <span class="switch"></span>
                 </div>
+                <div class="category-row"><span>技能名称</span><span>✓</span></div>
+                <div class="category-row"><span>技能描述</span><span>✓</span></div>
+                <div class="category-row"><span>装备与物品基底</span><span>✓</span></div>
+                <div class="category-row"><span>天赋名称</span><span>✓</span></div>
+                <div class="category-row"><span>词缀前后缀名称</span><span>✓</span></div>
+                <div class="category-row"><span>数值词缀与天赋效果</span><span>✓</span></div>
                 <div class="panel-status">翻译已启用 · 本地运行</div>
               </div>
             </aside>

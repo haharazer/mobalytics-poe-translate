@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Mobalytics PoE 中文化",
-  "version": "0.1.0",
-  "version_name": "0.1.0 初版",
-  "description": "将 Mobalytics 的 Path of Exile 1 攻略页技能石名称翻译为简体或繁体中文。",
+  "version": "0.3.2",
+  "version_name": "0.3.2 技能数值文本匹配修正",
+  "description": "翻译 Mobalytics PoE 1 攻略页技能名称与说明、传奇装备与基底名称、数值词缀及天赋效果。",
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
@@ -26,8 +26,12 @@
         "https://www.mobalytics.gg/poe/builds/*"
       ],
       "js": [
+        "src/stat-translation.js",
         "src/translation-core.js",
+        "src/page-context.js",
         "data/poe1-skill-gems.js",
+        "data/poe1-core.js",
+        "data/poe1-extended.js",
         "src/content.js"
       ],
       "run_at": "document_idle"
