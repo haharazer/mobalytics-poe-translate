@@ -1,8 +1,10 @@
-(function startMobalyticsTranslation() {
+(function startGuideTranslation() {
   "use strict";
 
   const { createLookup, translateText, normalizeSettings, CATEGORY_LABELS } = globalThis.PoeTranslationCore;
   const { getContext } = globalThis.PoePageContext;
+  const site = globalThis.PoeGuideSites.forURL(location.href);
+  if (!site) return;
   const DEFAULT_SETTINGS = normalizeSettings();
   const IGNORED_TAGS = new Set([
     "SCRIPT",
@@ -13,7 +15,7 @@
     "CODE",
     "PRE"
   ]);
-  const TRANSLATABLE_ATTRIBUTES = ["title", "aria-label"];
+  const TRANSLATABLE_ATTRIBUTES = site === globalThis.PoeGuideSites.maxroll ? ["title", "aria-label", "alt"] : ["title", "aria-label"];
   const INLINE_TAGS = new Set(["SPAN", "STRONG", "EM", "B", "I", "SMALL", "SUP", "SUB"]);
 
   const entries = [...(globalThis.POE1_SKILL_GEMS ?? []), ...(globalThis.POE1_CORE?.entries ?? []), ...(globalThis.POE1_EXTENDED?.entries ?? [])];
@@ -34,6 +36,7 @@
   let floatingControls;
   const pendingRoots = new Set();
   const prose = globalThis.PoeGuideProse.create({
+    site,
     settings: () => settings,
     sourceOf: node => renderedText.get(node) === node.nodeValue ? originalText.get(node) : node.nodeValue,
     writeText(node, output) {
@@ -335,7 +338,7 @@
       <section class="panel" aria-label="PoE 中文化设置" hidden>
         <div class="header">
           <div>
-            <p class="eyebrow">Mobalytics · PoE 1</p>
+            <p class="eyebrow">${site.name} · PoE 1</p>
             <h2>PoE 核心内容中文化</h2>
           </div>
           <button class="close" type="button" aria-label="隐藏设置">×</button>
@@ -391,7 +394,7 @@
     });
     shadow.querySelector("[data-prose-config]").addEventListener("click", async event => {
       if (!event.isTrusted) return;
-      try { await chrome.runtime.sendMessage({ type: "OPEN_PROSE_OPTIONS" }); }
+      try { await chrome.runtime.sendMessage({ type: "OPEN_PROSE_OPTIONS", showLogs: prose.failed() }); }
       catch { proseStatus.textContent = "请刷新页面，或从扩展工具栏打开配置。"; }
     });
 
@@ -435,6 +438,7 @@
       updateProse() {
         startProse.disabled = !prose.canStart();
         startProse.textContent = prose.failed() ? "重试正文翻译" : "翻译本页正文";
+        shadow.querySelector("[data-prose-config]").textContent = prose.failed() ? "查看 API 日志" : "配置 API";
         proseStatus.textContent = prose.status();
       },
       update(nextSettings) {
@@ -454,6 +458,7 @@
   function shouldIgnore(node) {
     const element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
     if (!element) return true;
+    if (site.pendingEntity?.(element)) return true;
     for (let parent = element; parent; parent = parent.parentElement) {
       if (IGNORED_TAGS.has(parent.tagName) || parent.isContentEditable || parent.id === "poe-cn-translator-root") return true;
     }
@@ -470,7 +475,22 @@
     }
 
     const source = originalText.get(node);
-    const output = translateText(source, lookup, settings, getContext(node.parentElement));
+    const context = getContext(node.parentElement);
+    let output = translateText(source, lookup, settings, context);
+    // Maxroll lets authors pluralize an inline game link (e.g. Divine Orbs).
+    // Use a verified singular dictionary entry only inside the marked entity.
+    const label = source.trim();
+    if (site === globalThis.PoeGuideSites.maxroll && output === source && settings.language !== "en" &&
+        label.endsWith("s") && !lookup.has(label) && node.parentElement.closest(".poe-gametip, .poe-item[data-poe-id]")) {
+      const singular = label.slice(0, -1);
+      if (lookup.has(singular)) {
+        const translated = translateText(singular, lookup, { ...settings, displayMode: "translated" }, context);
+        if (translated !== singular) {
+          const display = settings.displayMode === "bilingual" ? translated + " (" + label + ")" : translated;
+          output = source.replace(label, () => display);
+        }
+      }
+    }
     renderedText.set(node, output);
 
     if (output !== current) node.nodeValue = output;
@@ -533,7 +553,13 @@
   }
 
   function translateRoot(root) {
-    if (!root || !root.isConnected) return;
+    if (!root || !root.isConnected || globalThis.PoeGuideSites.forURL(location.href) !== site) return;
+    if (site.dictionary && !root.closest?.(site.dictionary)) {
+      for (const region of root.querySelectorAll?.(site.dictionary) || []) {
+        if (!region.parentElement?.closest(site.dictionary)) translateRoot(region);
+      }
+      return;
+    }
 
     if (root.nodeType === Node.TEXT_NODE) {
       translateTextNode(root);
@@ -571,8 +597,8 @@
 
   function scheduleTranslation(root) {
     let target = root.nodeType === Node.TEXT_NODE ? root.parentElement : root;
-    if (prose.enabled() && target?.closest?.(".lexical-rich-text-content")) {
-      target = target.closest("p, li, h3, h4, blockquote, td, th") || target;
+    if (prose.enabled() && target?.closest?.(site.rich)) {
+      target = target.closest(site.blocks) || target;
     }
     for (let parent = target?.parentElement; parent; parent = parent.parentElement) {
       if (composedGroups.has(parent)) target = parent;
@@ -609,14 +635,14 @@
         if (mutation.type === "attributes") {
           if (mutation.attributeName === "class" || mutation.attributeName === "style") {
             const el = mutation.target;
-            if (!prose.enabled() || !(el.closest(".lexical-rich-text-content") || el.querySelector(".lexical-rich-text-content"))) continue;
+            if (!prose.enabled() || !(el.closest(site.rich) || el.querySelector(site.rich))) continue;
           }
           const last = renderedAttributes.get(mutation.target);
           if (last?.has(mutation.attributeName) && last.get(mutation.attributeName) === mutation.target.getAttribute(mutation.attributeName)) continue;
           scheduleTranslation(mutation.target);
           continue;
         }
-        if (mutation.removedNodes.length && mutation.target.closest?.(".lexical-rich-text-content")) {
+        if (mutation.removedNodes.length && mutation.target.closest?.(site.rich)) {
           scheduleTranslation(mutation.target);
         }
         for (const node of mutation.addedNodes) {

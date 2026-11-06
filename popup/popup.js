@@ -36,8 +36,8 @@ function saveSettings(partial) {
 function updateStatus() {
   clearTimeout(statusTimer);
   chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
-    if (!tab?.id || !tab.url?.match(/^https:\/\/(www\.)?mobalytics\.gg\/poe\/builds\//)) {
-      statusElement.textContent = "请在 Mobalytics PoE 攻略页使用";
+    if (!tab?.id || !globalThis.PoeGuideSites.forURL(tab.url)) {
+      statusElement.textContent = "请在 Mobalytics 或 Maxroll 的 PoE 1 攻略页使用";
       statusDot.classList.remove("active");
       startProse.disabled = true;
       proseStatus.textContent = "请先打开 PoE 1 攻略页";
@@ -63,6 +63,7 @@ function updateStatus() {
         statusDot.classList.toggle("active", response.active);
         proseStatus.textContent = response.proseCanStart === undefined ? "请刷新攻略页以加载新版本。" : response.proseStatus;
         startProse.disabled = !response.proseCanStart;
+        document.querySelector("#open-logs").hidden = !response.proseFailed;
         startProse.textContent = response.proseFailed ? "重试正文翻译" : "翻译本页正文";
         if (response.proseBusy) statusTimer = setTimeout(updateStatus, 1800);
       }
@@ -86,6 +87,7 @@ chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
 });
 
 document.querySelector("#open-options").onclick = () => chrome.runtime.openOptionsPage();
+document.querySelector("#open-logs").onclick = () => chrome.tabs.create({ url: chrome.runtime.getURL("popup/options.html#api-logs") });
 startProse.onclick = async () => {
   startProse.disabled = true;
   try {

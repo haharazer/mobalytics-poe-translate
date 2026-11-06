@@ -1,8 +1,8 @@
 {
   "name": "mobalytics-poe-translate",
-  "version": "0.4.3",
+  "version": "0.6.3",
   "private": true,
-  "description": "Mobalytics Path of Exile 1 攻略页核心游戏内容中文化扩展",
+  "description": "Mobalytics 与 Maxroll Path of Exile 1 攻略中文化扩展",
   "scripts": {
     "build:data": "node scripts/generate_skill_dictionary.mjs && node scripts/generate_core_dictionary.mjs && node scripts/generate_extended_dictionary.mjs",
     "build:extended": "node scripts/generate_extended_dictionary.mjs",

@@ -6,7 +6,7 @@
   <script>
     const storageListeners = [], messageListeners = [];
     let storedSettings = {};
-    let proseRevision = null, automaticProse = false, pendingReply;
+    let proseRevision = null, automaticProse = false, pendingReply, invalidRow;
     const proseCalls = [];
     globalThis.chrome = {
       storage: {
@@ -24,9 +24,11 @@
         onMessage: { addListener(listener) { messageListeners.push(listener); } },
         async sendMessage(message) {
           if (message.type === "PROSE_STATE") return { revision: proseRevision, automatic: automaticProse };
-          proseCalls.push(message);
+          for (const parts of message.paragraphs) proseCalls.push({ parts, manual: message.manual, batchSize: message.paragraphs.length });
           if (pendingReply) return new Promise(resolve => { pendingReply = resolve; });
-          return { result: message.parts.map(p => p === null ? null : p.replace("Use", "使用").replace("to cross gaps.", "跨过缺口。").replace("while levelling.", "用于练级。")) };
+          return { rows: message.paragraphs.map(parts => invalidRow && parts.includes(invalidRow)
+            ? { kind: "paragraph-format", error: "invalid fragment" }
+            : { result: parts.map(p => p === null ? null : p.replace("Use", "使用").replace("to cross gaps.", "跨过缺口。").replace("while levelling.", "用于练级。")) }) };
         }
       }
     };
@@ -88,7 +90,12 @@ Cannot deal non-Cold Damage</div>
     document.querySelector("#focused-quality").append("(0-10)", "% increased Cast Speed");
     const initialSource = [...document.querySelectorAll("[data-check]")].map((element) => [element.id, element.textContent, element.getAttribute("title")]);
   </script>
-  <script src="../src/guide-prose.js"></script>
+  <script src="../src/llm.js"></script><script src="../src/guide-prose.js"></script>
+  <script src="../src/guide-sites.js"></script>
+  <script>
+    // The Chromium fixture is loaded from file:// rather than a public host.
+    PoeGuideSites.forURL = () => PoeGuideSites.mobalytics;
+  </script>
   <script src="../src/content.js"></script>
   <script>
     const results = [];
@@ -208,6 +215,7 @@ Cannot deal non-Cold Damage</div>
       send("START_PROSE");
       await wait();
       equal(proseCalls.every(call => call.manual === true), true, "popup action requests only the current manual batch");
+      equal(proseCalls[0].batchSize, 2, "two paragraphs share one translation message");
       equal(proseCalls.map(c => c.parts), [["Use ⟦0⟧ to cross gaps."], ["Use", null, "while levelling."]], "only author fragments sent; exact terms, rich links, combined stats and editable drafts stay local");
       equal(text("author"), "使用 重盾冲锋 跨过缺口。", "inline glossary term restored inside prose");
       equal(comments.querySelector("p").textContent, "Use my comment while levelling.", "manual translation skips the Comments widget");
@@ -264,7 +272,7 @@ Cannot deal non-Cold Damage</div>
       mountAct(act1Source);
       await wait();
       equal(text("author"), "使用 Shield Charge 跨过缺口。", "returning to a cached act renders immediately while another request is pending");
-      pendingReply({ result: ["已离开的章节"] });
+      pendingReply({ rows: [{ result: ["已离开的章节"] }] });
       pendingReply = null;
       await wait();
       equal(text("author"), "使用 Shield Charge 跨过缺口。", "a late variant reply cannot overwrite the active act");
@@ -282,10 +290,24 @@ Cannot deal non-Cold Damage</div>
       document.querySelector("#author").firstChild.nodeValue = "Use a different setup.";
       await wait();
       chrome.storage.sync.set({ language: "en" });
-      pendingReply({ result: ["过期的翻译"] });
+      pendingReply({ rows: [{ result: ["过期的翻译"] }] });
       await wait();
       equal(text("author"), "Use a different setup.", "late model reply cannot overwrite English or newer source");
       equal(text("linked"), "Use Shield Charge while levelling.", "English restores split prose nodes");
+      const more = document.createElement("div");
+      invalidRow = "Use technique number 0.";
+      more.innerHTML = Array.from({ length: 20 }, (_, i) => "<p>Use technique number " + i + ".</p>").join("");
+      rich.append(more);
+      pendingReply = null;
+      chrome.storage.sync.set({ language: "zh-CN" });
+      await wait();
+      equal(more.firstChild.textContent, invalidRow, "invalid paragraph stays in English");
+      equal(more.lastChild.textContent, "使用 technique number 19.", "later batches run after one malformed row");
+      const beforeRetry = proseCalls.length;
+      invalidRow = null;
+      send("START_PROSE");
+      await wait();
+      equal([more.firstChild.textContent, proseCalls.length - beforeRetry], ["使用 technique number 0.", 1], "retry submits only the failed paragraph");
       document.body.dataset.result = "pass";
       document.querySelector("#result").textContent = JSON.stringify({ passed: true, checks: results.length, results });
     })().catch((error) => {

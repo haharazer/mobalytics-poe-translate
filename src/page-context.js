@@ -15,6 +15,11 @@
       if (!category) {
         const explicit = current.getAttribute("data-poe-category");
         if (CATEGORIES.has(explicit)) category = explicit;
+        if (!category && current.classList.length) {
+          if (current.matches(".poe-gemPopup, .poe-item-gem, .poe-gem")) category = "skill";
+          else if (current.matches(".poe-passivePopup, .poe-item-passive, .poe-passive")) category = "passive";
+          else if (current.matches(".poe-itemPopup, .poe-item-unique, .poe-item-normal, .poe-item")) category = "item";
+        }
         category ??= categoryFromLabel(current.id) ?? categoryFromLabel(current.getAttribute("aria-label"));
         // Real Mobalytics widgets use UUID section IDs and semantic h2 headers.
         if (!category && current.tagName === "SECTION") {

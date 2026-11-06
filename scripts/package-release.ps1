@@ -22,6 +22,7 @@ $runtimeFiles = @(
   "src\stat-translation.js",
   "src\page-context.js",
   "src\guide-prose.js",
+  "src\guide-sites.js",
   "src\llm.js",
   "src\llm-cache.js",
   "src\background.js",

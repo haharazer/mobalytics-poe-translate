@@ -2,15 +2,15 @@
 
 ## 名称
 
-Mobalytics PoE 中文化
+PoE 攻略中文化 · Mobalytics 与 Maxroll
 
 ## 简短说明
 
-将 Mobalytics PoE 1 攻略页的技能说明、传奇装备、装备基底、数值词缀及天赋效果切换为中文或双语。
+将 Mobalytics 和 Maxroll PoE 1 攻略页的技能说明、传奇装备、装备基底、数值词缀及天赋效果切换为中文或双语。
 
 ## 详细说明
 
-在 Mobalytics PoE 1 构筑攻略中直接阅读客户端中文名称和技能说明。
+在 Mobalytics 和 Maxroll PoE 1 构筑攻略中直接阅读客户端中文名称和技能说明。
 
 主要功能：
 
@@ -21,7 +21,7 @@ Mobalytics PoE 中文化
 - 简体中文、繁体中文、英文一键切换
 - 可选中英双语显示
 - 页面右下角快捷语言面板
-- 切换攻略 Build Variant 后自动翻译
+- 支持 Mobalytics Build Variants 及 Maxroll Build Progression Tool 的动态内容
 - 自动识别省略 `Support` 的辅助宝石名称
 - 可选接入自己的 LLM API 翻译作者正文，支持自定义 PoE 提示词及本地译文缓存
 
@@ -31,9 +31,9 @@ Mobalytics PoE 中文化
 ## 权限用途
 
 - `storage`：保存用户选择的语言、双语显示与分类开关设置。
-- `activeTab`：让扩展工具栏弹窗确认当前标签页是否为受支持的 Mobalytics
+- `activeTab`：让扩展工具栏弹窗确认当前标签页是否为受支持的 Mobalytics 或 Maxroll
   攻略页并显示运行状态，不读取浏览历史。
-- `mobalytics.gg/poe/builds/*` 站点访问：识别并替换攻略页中已覆盖的游戏名称与说明。
+- `mobalytics.gg/poe/builds/*` 与 `maxroll.gg/poe/build-guides/*` 站点访问：识别并替换攻略页中已覆盖的游戏名称与说明。
 - 可选 API 主机权限：用户开启正文翻译时，仅请求配置的 HTTPS 主机或本机 HTTP 主机。
 
 ## 隐私

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Maxroll build guide fixture</title>
+<body>
+<nav>Shield Charge</nav>
+<article><div id="main-article">
+  <p id="intro">During the campaign, use <span class="poe-item" data-poe-id="fixture">Shield Charge</span> for mobility.</p>
+  <p><span class="poe-item" data-poe-id="currency"><span class="poe-gametip"><span class="poe-item-currency">Divine Orbs</span></span></span></p>
+  <figure class="poe-embed-wrapper"><div class="poe-embed" data-poe-type="leveling" data-poe-id="11">
+    <div class="poeplanner-wrapper"><div class="poe-leveling-viewer">
+      <div class="poe-leveling-tab-headers"><span>Overview</span></div>
+      <div class="poe-gem"><img alt="Shield Charge"></div>
+      <div class="poe-widget poe-author"><p>Example guide author</p></div>
+      <div class="poe-strengths"><ul><li>Few buttons</li></ul></div>
+      <div class="poe-custom-tab-content"><div class="poe-rich-text-editor">
+        <div data-lexical-editor="true" contenteditable="false" aria-readonly="true" id="reader">
+          <h1>Common mistakes</h1><p id="note">Use <span class="poe-gametip"><span class="poe-item-gem">Shield Charge</span></span> early.</p>
+          <p>Stash search: <span>"bad|mods$"</span></p>
+        </div>
+      </div></div>
+      <div class="poe-progression-card"><div class="poe-card-title">1. Getting started</div></div>
+    </div></div>
+  </div></figure>
+  <section><header><h2>Comments</h2></header><p>Private reader reply.</p></section>
+  <h3 id="credits-header">Credits</h3><div><p>Written by someone.</p></div>
+  <div><h2 id="changelog-header">Changelog</h2><p>Private revision note.</p></div>
+</div></article>
+<article data-post-card="true"><p>Other build summary</p></article>
+<pre id="result">running</pre>
+<script src="../src/guide-sites.js"></script>
+<script>
+PoeGuideSites.forURL = () => PoeGuideSites.maxroll;
+const requests = [], listeners = [];
+let changeSettings;
+globalThis.chrome = {
+  storage: { sync: { get: (defaults, fn) => fn(defaults) }, onChanged: { addListener(fn) { changeSettings = fn; } } },
+  runtime: { onMessage: { addListener(fn) { listeners.push(fn); } }, async sendMessage(msg) {
+    if (msg.type === "PROSE_STATE") return { revision: "test", automatic: false };
+    requests.push(msg.paragraphs);
+    return { rows: msg.paragraphs.map(parts => ({ result: parts.map(p => p === null ? null : "译 " + p) })) };
+  } }
+};
+</script>
+<script src="../src/stat-translation.js"></script><script src="../src/translation-core.js"></script>
+<script src="../src/page-context.js"></script><script src="../data/poe1-skill-gems.js"></script>
+<script src="../data/poe1-core.js"></script><script src="../data/poe1-extended.js"></script>
+<script src="../src/llm.js"></script><script src="../src/guide-prose.js"></script><script src="../src/content.js"></script>
+<script>
+const wait = () => new Promise(resolve => setTimeout(resolve, 100));
+const text = s => document.querySelector(s).textContent;
+const checks = [];
+function check(ok, name) { if (!ok) throw Error(name); checks.push(name); }
+(async () => {
+  await wait();
+  check(text(".poe-item-gem") === "重盾冲锋" && text("nav") === "Shield Charge", "dictionary is scoped to the guide");
+  check(text(".poe-item-currency") === "神圣石" && document.querySelector(".poe-gem img").alt === "重盾冲锋", "plural entity labels and gem image alt text use the dictionary");
+  const lazyItem = document.querySelector("#intro .poe-item");
+  check(lazyItem.textContent === "Shield Charge", "the planner can capture its original HTML before hydration");
+  lazyItem.innerHTML = '<span class="poe-gametip"><span class="poe-item-gem">' + lazyItem.textContent + '</span></span>';
+  await wait();
+  check(lazyItem.textContent === "重盾冲锋", "hydrated entity renders with the dictionary");
+  check(requests.length === 0, "manual mode waits for the reader");
+  listeners.forEach(fn => fn({ type: "START_PROSE" }, {}, () => {}));
+  await wait();
+  check(text("#intro").startsWith("译 ") && text("#note") === "译 Use 重盾冲锋 译 early.", "article and read-only planner prose preserve game tips");
+  check(["#reader h1", ".poe-strengths li", ".poe-card-title"].every(s => text(s).startsWith("译 ")), "planner headings, strengths and milestone titles");
+  const payload = JSON.stringify(requests);
+  check(requests[0].length > 1, "multiple planner paragraphs share one request");
+  check(!/Overview|Example guide author|Private|Other build summary|Written by|bad\|mods|Shield Charge/.test(payload), "controls, credits, comments, search regex and item text excluded");
+  const reader = document.querySelector("#reader");
+  const count = requests.length;
+  const note = document.querySelector("#note").cloneNode(false);
+  note.textContent = "Follow the next milestone.";
+  reader.replaceChildren(note);
+  await wait();
+  check(text("#note").startsWith("译 ") && requests.length === count + 1, "switching a planner tab translates new text");
+  reader.innerHTML = '<p id="note">Use <span class="poe-gametip"><span class="poe-item-gem">Shield Charge</span></span> early.</p>';
+  await wait();
+  check(text("#note").startsWith("译 ") && requests.length === count + 1, "returning to a tab reuses its translation");
+  const popup = document.createElement("div");
+  popup.className = "poe-itemPopup";
+  popup.innerHTML = '<div class="poe-itemName">Vaal Regalia</div><div><span>(0-10)%</span> increased Cold Damage</div><p>Unknown item rule.</p>';
+  document.body.append(popup);
+  await wait();
+  check(text(".poe-itemName") === "瓦尔法衣" && !popup.innerText.includes("increased Cold Damage") && requests.length === count + 1, "portalled item card and split stat are local only");
+  changeSettings({ language: { newValue: "en" } }, "sync");
+  await wait();
+  check(text("#note") === "Use Shield Charge early." && text(".poe-itemName") === "Vaal Regalia" && lazyItem.textContent === "Shield Charge" && text(".poe-item-currency") === "Divine Orbs", "English restores planner text, lazy and plural entities, and tooltip");
+  document.body.dataset.result = "pass";
+  document.querySelector("#result").textContent = JSON.stringify({ checks });
+})().catch(e => { document.querySelector("#result").textContent = JSON.stringify({ error:e.message, checks }); });
+</script></body></html>

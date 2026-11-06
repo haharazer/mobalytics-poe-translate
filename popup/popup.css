@@ -208,6 +208,21 @@ button {
 .options textarea { line-height: 1.6; resize: vertical; }
 .options #save { background: #6444cd; }
 .options [role=status] { margin-left: 8px; }
+.settings-nav, .pager, #capacity { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.settings-nav a { color: #c5b6ff; }
+.options section { scroll-margin-top: 12px; }
+.options progress { width: 100%; margin: 8px 0; accent-color: #9480ff; }
+.options #limit { width: 105px; margin: 0; }
+#capacity button, .pager button { margin: 0; }
+.pager, #capacity { margin: 10px 0; }
+.pager button:disabled { opacity: .45; cursor: default; }
+.options details { border-bottom: 1px solid #36394a; padding: 9px 0; overflow-wrap: anywhere; }
+.options summary { cursor: pointer; }
+.options details h3 { margin: 8px 0 3px; font-size: 12px; }
+.options details small { color: #a4a9ba; }
+.options details pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 22em; overflow: auto; padding: 8px; margin: 4px 0; background: #111522; }
+.options .failure { color: #ffb5a8; }
+.options .success { color: #83d8ae; }
 
 .status-dot {
   width: 7px;
