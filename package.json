@@ -1,6 +1,6 @@
 {
   "name": "mobalytics-poe-translate",
-  "version": "0.3.2",
+  "version": "0.4.3",
   "private": true,
   "description": "Mobalytics Path of Exile 1 攻略页核心游戏内容中文化扩展",
   "scripts": {

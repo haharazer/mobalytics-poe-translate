@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Mobalytics PoE 中文化",
-  "version": "0.3.2",
-  "version_name": "0.3.2 技能数值文本匹配修正",
-  "description": "翻译 Mobalytics PoE 1 攻略页技能名称与说明、传奇装备与基底名称、数值词缀及天赋效果。",
+  "version": "0.4.3",
+  "version_name": "0.4.3 正文翻译跳过评论区",
+  "description": "使用本地词库翻译 PoE 1 游戏内容，可选接入自定义 LLM 翻译 Mobalytics 攻略正文。",
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
@@ -11,6 +11,9 @@
     "128": "icons/icon-128.png"
   },
   "permissions": ["storage", "activeTab"],
+  "optional_host_permissions": ["https://*/*", "http://localhost/*", "http://127.0.0.1/*", "http://[::1]/*"],
+  "background": { "service_worker": "src/background.js" },
+  "options_ui": { "page": "popup/options.html", "open_in_tab": true },
   "action": {
     "default_title": "Mobalytics PoE 中文化",
     "default_popup": "popup/popup.html",
@@ -32,6 +35,7 @@
         "data/poe1-skill-gems.js",
         "data/poe1-core.js",
         "data/poe1-extended.js",
+        "src/guide-prose.js",
         "src/content.js"
       ],
       "run_at": "document_idle"

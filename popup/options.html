@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>攻略正文翻译 · Mobalytics PoE 中文化</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body class="options">
+  <main>
+    <header><div class="mark" aria-hidden="true">译</div><div><h1>攻略正文翻译</h1><p>Mobalytics · Path of Exile 1</p></div></header>
+    <form id="config">
+      <section>
+        <label class="category-row"><strong>自动翻译作者正文</strong><input type="checkbox" id="enabled"></label>
+        <p class="hint">默认手动翻译。在攻略页点击「译」→「翻译本页正文」后，切换本篇攻略的变体也会继续翻译。勾选此项可跨攻略自动翻译。两种方式均优先使用缓存，调用 API 可能产生费用。</p>
+      </section>
+      <section>
+        <h2>模型连接</h2>
+        <label>API 端点<input type="url" id="endpoint" placeholder="https://api.example.com/v1" spellcheck="false"></label>
+        <p class="hint">支持兼容 Chat Completions 的服务。填写 API 基址或完整的 /chat/completions 地址。</p>
+        <label>模型名称<input type="text" id="model" placeholder="填写服务商提供的模型 ID" maxlength="200" spellcheck="false"></label>
+        <label>API Key<input type="password" id="api-key" autocomplete="off" spellcheck="false"></label>
+        <p class="hint">密钥仅保存在此浏览器的扩展设置中。本机免鉴权服务可留空。</p>
+      </section>
+      <section>
+        <h2><label for="prompt">PoE 1 翻译提示词</label></h2>
+        <textarea id="prompt" rows="11" required maxlength="16000"></textarea>
+        <button type="button" id="restore">恢复默认提示词</button>
+      </section>
+      <button type="submit" id="save" disabled>保存设置</button>
+      <span id="feedback" role="status"></span>
+    </form>
+    <section>
+      <h2>本地译文缓存</h2>
+      <p class="hint">最多保存 2,000 段译文。修改模型、端点、提示词或目标语言后，插件会按新配置查找译文。清空后，下次翻译可能再次计费。</p>
+      <button type="button" id="clear">清空译文缓存</button>
+      <span id="cache-feedback" role="status"></span>
+    </section>
+  </main>
+  <script src="../src/llm.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

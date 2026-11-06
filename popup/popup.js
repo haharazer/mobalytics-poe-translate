@@ -8,6 +8,8 @@ const languageInputs = [...document.querySelectorAll('input[name="language"]')];
 const bilingualInput = document.querySelector("#bilingual");
 const statusElement = document.querySelector("#status");
 const statusDot = document.querySelector(".status-dot");
+const startProse = document.querySelector("#start-prose");
+const proseStatus = document.querySelector("#prose-status");
 const categoryContainer = document.querySelector("#categories");
 const categoryInputs = Object.entries(CATEGORY_LABELS).map(([key, label]) => {
   const row = document.createElement("label");
@@ -32,10 +34,13 @@ function saveSettings(partial) {
 }
 
 function updateStatus() {
+  clearTimeout(statusTimer);
   chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     if (!tab?.id || !tab.url?.match(/^https:\/\/(www\.)?mobalytics\.gg\/poe\/builds\//)) {
       statusElement.textContent = "请在 Mobalytics PoE 攻略页使用";
       statusDot.classList.remove("active");
+      startProse.disabled = true;
+      proseStatus.textContent = "请先打开 PoE 1 攻略页";
       return;
     }
 
@@ -46,6 +51,8 @@ function updateStatus() {
         if (chrome.runtime.lastError || !response) {
           statusElement.textContent = "刷新页面后即可启用";
           statusDot.classList.remove("active");
+          startProse.disabled = true;
+          proseStatus.textContent = "请刷新攻略页以加载扩展";
           return;
         }
 
@@ -54,6 +61,10 @@ function updateStatus() {
             ? `已载入 ${response.dictionarySize} 条词条 · 当前显示英文`
             : `已载入 ${response.dictionarySize} 条词条 · ${response.active ? "翻译已启用" : "翻译已关闭"}`;
         statusDot.classList.toggle("active", response.active);
+        proseStatus.textContent = response.proseCanStart === undefined ? "请刷新攻略页以加载新版本。" : response.proseStatus;
+        startProse.disabled = !response.proseCanStart;
+        startProse.textContent = response.proseFailed ? "重试正文翻译" : "翻译本页正文";
+        if (response.proseBusy) statusTimer = setTimeout(updateStatus, 1800);
       }
     );
   });
@@ -68,10 +79,21 @@ function renderSettings(stored) {
   for (const input of categoryInputs) input.checked = settings.categories[input.dataset.category];
 }
 
+let statusTimer;
 chrome.storage.sync.get(DEFAULT_SETTINGS, (settings) => {
   renderSettings(settings);
   updateStatus();
 });
+
+document.querySelector("#open-options").onclick = () => chrome.runtime.openOptionsPage();
+startProse.onclick = async () => {
+  startProse.disabled = true;
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tab?.id) await chrome.tabs.sendMessage(tab.id, { type: "START_PROSE" });
+    updateStatus();
+  } catch { proseStatus.textContent = "请刷新攻略页后重试"; }
+};
 
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== "sync") return;
