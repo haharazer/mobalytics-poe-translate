@@ -26,8 +26,13 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check src/translation-core.js
+          node --check src/stat-translation.js
+          node --check src/page-context.js
           node --check src/content.js
           node --check popup/popup.js
+
+      - name: Test browser integration
+        run: npm run test:browser
 
       - name: Validate manifest and runtime files
         run: |
@@ -44,8 +49,12 @@ jobs:
             if (!fs.existsSync(file)) throw new Error(`Missing runtime file: ${file}`);
           }
           require("./data/poe1-skill-gems.js");
+          require("./data/poe1-core.js");
+          require("./data/poe1-extended.js");
           if (globalThis.POE1_SKILL_GEMS.length !== 812) {
             throw new Error("Expected 812 PoE 1 skill gem entries.");
           }
-          console.log(`Validated ${files.length} references and 812 dictionary entries.`);
+          if (!globalThis.POE1_CORE.entries.length) throw new Error("Missing core dictionary");
+          if (!globalThis.POE1_EXTENDED.statRules.length) throw new Error("Missing stat display rules");
+          console.log(`Validated ${files.length} references, 812 skill names and ${globalThis.POE1_CORE.entries.length} core entries.`);
           NODE

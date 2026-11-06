@@ -1,3 +1,6 @@
 node_modules/
+.local/
 *.log
 release/.staging-*/
+release/*.zip
+release/*.zip.sha256

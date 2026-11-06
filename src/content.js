@@ -1,10 +1,9 @@
 (function startMobalyticsTranslation() {
   "use strict";
 
-  const DEFAULT_SETTINGS = Object.freeze({
-    language: "zh-CN",
-    displayMode: "translated"
-  });
+  const { createLookup, translateText, normalizeSettings, CATEGORY_LABELS } = globalThis.PoeTranslationCore;
+  const { getContext } = globalThis.PoePageContext;
+  const DEFAULT_SETTINGS = normalizeSettings();
   const IGNORED_TAGS = new Set([
     "SCRIPT",
     "STYLE",
@@ -15,17 +14,21 @@
     "PRE"
   ]);
   const TRANSLATABLE_ATTRIBUTES = ["title", "aria-label"];
+  const INLINE_TAGS = new Set(["SPAN", "STRONG", "EM", "B", "I", "SMALL", "SUP", "SUB"]);
 
-  const entries = globalThis.POE1_SKILL_GEMS ?? [];
-  const { createLookup, translateText } = globalThis.PoeTranslationCore;
-  const lookup = createLookup(entries);
+  const entries = [...(globalThis.POE1_SKILL_GEMS ?? []), ...(globalThis.POE1_CORE?.entries ?? []), ...(globalThis.POE1_EXTENDED?.entries ?? [])];
+  const statRules = globalThis.POE1_EXTENDED?.statRules ?? [];
+  const categorySizes = Object.fromEntries(Object.keys(CATEGORY_LABELS).map((category) => [category,
+    category === "stat" ? statRules.length : entries.filter((entry) => (entry.category ?? "skill") === category).length
+  ]));
+  const lookup = createLookup(entries, statRules);
   const originalText = new WeakMap();
   const renderedText = new WeakMap();
   const originalAttributes = new WeakMap();
   const renderedAttributes = new WeakMap();
+  const composedGroups = new WeakSet();
 
   let settings = { ...DEFAULT_SETTINGS };
-  let translatedNodes = 0;
   let observer;
   let scheduled = false;
   let floatingControls;
@@ -93,7 +96,8 @@
           bottom: 82px;
           z-index: 2147483647;
           width: min(330px, calc(100vw - 32px));
-          overflow: hidden;
+          max-height: calc(100dvh - 110px);
+          overflow: auto;
           border: 1px solid rgba(255, 255, 255, 0.12);
           border-radius: 16px;
           background:
@@ -221,6 +225,12 @@
           font-size: 10px;
         }
 
+        .categories .option {
+          margin-top: 6px;
+          padding: 8px 10px;
+          font-size: 11px;
+        }
+
         .switch {
           position: relative;
           flex: 0 0 auto;
@@ -302,7 +312,7 @@
         <div class="header">
           <div>
             <p class="eyebrow">Mobalytics · PoE 1</p>
-            <h2>技能石中文化</h2>
+            <h2>PoE 核心内容中文化</h2>
           </div>
           <button class="close" type="button" aria-label="隐藏设置">×</button>
         </div>
@@ -323,9 +333,15 @@
               <span aria-hidden="true"></span>
             </label>
           </div>
+          <div class="categories" role="group" aria-label="翻译范围">
+            ${Object.entries(CATEGORY_LABELS).map(([key, label]) => `
+              <label class="option"><span>${label} · ${categorySizes[key] ?? 0}</span>
+                <input type="checkbox" data-category="${key}" aria-label="翻译${label}">
+              </label>`).join("")}
+          </div>
           <div class="status">
             <span class="dot" aria-hidden="true"></span>
-            <span>已载入 ${entries.length} 条 PoE 1 技能石词条</span>
+            <span>已载入 ${entries.length} 条词条 · ${statRules.length} 条属性规则</span>
           </div>
         </div>
       </section>
@@ -336,6 +352,7 @@
     const close = shadow.querySelector(".close");
     const languageButtons = [...shadow.querySelectorAll("[data-language]")];
     const bilingual = shadow.querySelector('input[type="checkbox"]');
+    const categoryInputs = [...shadow.querySelectorAll("[data-category]")];
 
     function setOpen(open) {
       panel.hidden = !open;
@@ -366,6 +383,11 @@
         displayMode: bilingual.checked ? "bilingual" : "translated"
       });
     });
+    for (const input of categoryInputs) {
+      input.addEventListener("change", () => {
+        chrome.storage.sync.set({ categories: { ...settings.categories, [input.dataset.category]: input.checked } });
+      });
+    }
 
     document.body.append(host);
     floatingControls = {
@@ -377,13 +399,18 @@
           );
         }
         bilingual.checked = nextSettings.displayMode === "bilingual";
+        for (const input of categoryInputs) input.checked = nextSettings.categories[input.dataset.category];
       }
     };
   }
 
   function shouldIgnore(node) {
-    const parent = node.parentElement;
-    return !parent || IGNORED_TAGS.has(parent.tagName) || parent.isContentEditable;
+    const element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+    if (!element) return true;
+    for (let parent = element; parent; parent = parent.parentElement) {
+      if (IGNORED_TAGS.has(parent.tagName) || parent.isContentEditable || parent.id === "poe-cn-translator-root") return true;
+    }
+    return false;
   }
 
   function translateTextNode(node) {
@@ -396,15 +423,14 @@
     }
 
     const source = originalText.get(node);
-    const output = translateText(source, lookup, settings);
+    const output = translateText(source, lookup, settings, getContext(node.parentElement));
     renderedText.set(node, output);
 
     if (output !== current) node.nodeValue = output;
-    if (output !== source) translatedNodes += 1;
   }
 
   function translateElementAttributes(element) {
-    if (IGNORED_TAGS.has(element.tagName)) return;
+    if (shouldIgnore(element)) return;
 
     let originals = originalAttributes.get(element);
     let rendered = renderedAttributes.get(element);
@@ -418,7 +444,11 @@
     }
 
     for (const attribute of TRANSLATABLE_ATTRIBUTES) {
-      if (!element.hasAttribute(attribute)) continue;
+      if (!element.hasAttribute(attribute)) {
+        originals.delete(attribute);
+        rendered.delete(attribute);
+        continue;
+      }
 
       const current = element.getAttribute(attribute) ?? "";
       if (!originals.has(attribute) || (
@@ -428,15 +458,35 @@
       }
 
       const source = originals.get(attribute);
-      const output = translateText(source, lookup, settings);
+      const output = translateText(source, lookup, settings, getContext(element));
       rendered.set(attribute, output);
       if (output !== current) element.setAttribute(attribute, output);
     }
   }
 
+  // Tooltip formatters split values into adjacent text nodes or nested spans. Keep the
+  // elements/listeners intact, and restore every original text node on rerender.
+  function translateComposedElement(element) {
+    if (element.childNodes.length < 2 || shouldIgnore(element)) return;
+    const descendants = [...element.querySelectorAll("*")];
+    if (descendants.length > 24 || descendants.some((child) => !INLINE_TAGS.has(child.tagName) || shouldIgnore(child))) return;
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) nodes.push(node);
+    if (nodes.length < 2) return;
+    const source = nodes.map((node) => originalText.get(node) ?? node.nodeValue).join("");
+    const output = translateText(source, lookup, settings, { ...getContext(element), atomicOnly: true });
+    if (output === source) return;
+    composedGroups.add(element);
+    nodes.forEach((node, index) => {
+      const value = index === 0 ? output : "";
+      renderedText.set(node, value);
+      if (node.nodeValue !== value) node.nodeValue = value;
+    });
+  }
+
   function translateRoot(root) {
     if (!root || !root.isConnected) return;
-    translatedNodes = 0;
 
     if (root.nodeType === Node.TEXT_NODE) {
       translateTextNode(root);
@@ -447,44 +497,67 @@
       return;
     }
 
-    if (root.nodeType === Node.ELEMENT_NODE) translateElementAttributes(root);
+    if (root.nodeType === Node.ELEMENT_NODE) {
+      if (shouldIgnore(root)) return;
+      translateElementAttributes(root);
+    }
 
     const walker = document.createTreeWalker(
       root,
-      NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT
+      NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT,
+      { acceptNode: (node) => shouldIgnore(node) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT }
     );
+    const elements = root.nodeType === Node.ELEMENT_NODE ? [root] : [];
     let node = walker.nextNode();
     while (node) {
       if (node.nodeType === Node.TEXT_NODE) {
         translateTextNode(node);
       } else {
         translateElementAttributes(node);
+        elements.push(node);
       }
       node = walker.nextNode();
     }
+    for (const element of elements.reverse()) translateComposedElement(element);
   }
 
   function scheduleTranslation(root) {
-    pendingRoots.add(root.nodeType === Node.TEXT_NODE ? root.parentElement : root);
+    let target = root.nodeType === Node.TEXT_NODE ? root.parentElement : root;
+    for (let parent = target?.parentElement; parent; parent = parent.parentElement) {
+      if (composedGroups.has(parent)) target = parent;
+    }
+    pendingRoots.add(target);
     if (scheduled) return;
 
     scheduled = true;
-    requestAnimationFrame(() => {
+    let frame, timer;
+    const flush = () => {
+      if (!scheduled) return;
       scheduled = false;
+      cancelAnimationFrame(frame);
+      clearTimeout(timer);
       const roots = [...pendingRoots];
       pendingRoots.clear();
-      for (const pendingRoot of roots) translateRoot(pendingRoot);
-    });
+      for (const pendingRoot of roots) {
+        if (pendingRoot && !roots.some((other) => other && other !== pendingRoot && other.contains(pendingRoot))) translateRoot(pendingRoot);
+      }
+    };
+    frame = requestAnimationFrame(flush);
+    // Background tabs and hidden tooltips can suspend animation frames.
+    timer = setTimeout(flush, 50);
   }
 
   function observePage() {
     observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         if (mutation.type === "characterData") {
+          if (renderedText.get(mutation.target) === mutation.target.nodeValue) continue;
           scheduleTranslation(mutation.target);
           continue;
         }
         if (mutation.type === "attributes") {
+          const last = renderedAttributes.get(mutation.target);
+          if (last?.has(mutation.attributeName) && last.get(mutation.attributeName) === mutation.target.getAttribute(mutation.attributeName)) continue;
           scheduleTranslation(mutation.target);
           continue;
         }
@@ -499,12 +572,12 @@
       subtree: true,
       characterData: true,
       attributes: true,
-      attributeFilter: TRANSLATABLE_ATTRIBUTES
+      attributeFilter: [...TRANSLATABLE_ATTRIBUTES, "id", "aria-labelledby", "data-poe-category", "data-poe-entity-id"]
     });
   }
 
   function applySettings(nextSettings) {
-    settings = { ...DEFAULT_SETTINGS, ...nextSettings };
+    settings = normalizeSettings(nextSettings);
     floatingControls?.update(settings);
     translateRoot(document.body);
   }
@@ -520,16 +593,24 @@
     const next = { ...settings };
     if (changes.language) next.language = changes.language.newValue;
     if (changes.displayMode) next.displayMode = changes.displayMode.newValue;
+    if (changes.categories) next.categories = changes.categories.newValue;
     applySettings(next);
   });
 
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (message?.type !== "GET_TRANSLATION_STATUS") return;
+    let translatedNodes = 0;
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      if (renderedText.get(node) === node.nodeValue && node.nodeValue !== originalText.get(node)) translatedNodes += 1;
+    }
     sendResponse({
-      active: settings.language !== "en",
+      active: settings.language !== "en" && Object.values(settings.categories).some(Boolean),
       language: settings.language,
       displayMode: settings.displayMode,
-      dictionarySize: entries.length,
+      dictionarySize: entries.length + statRules.length,
+      categorySizes,
+      categories: settings.categories,
       translatedNodes
     });
   });

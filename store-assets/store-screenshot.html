@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=1280, initial-scale=1">
+    <title>Mobalytics PoE 中文化商店截图</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+        background: #0b0e17;
+        color: #f7f8fb;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 1280px;
+        height: 800px;
+        margin: 0;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 88% 9%, rgba(111, 80, 238, 0.28), transparent 31%),
+          radial-gradient(circle at 8% 77%, rgba(60, 164, 255, 0.12), transparent 29%),
+          #0b0e17;
+      }
+
+      .canvas {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        padding: 30px 52px;
+      }
+
+      .hero {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .brand img {
+        width: 70px;
+        height: 70px;
+        border-radius: 18px;
+        box-shadow: 0 16px 42px rgba(67, 37, 183, 0.38);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 36px;
+        line-height: 1.08;
+        letter-spacing: -0.04em;
+      }
+
+      .subtitle {
+        margin: 6px 0 0;
+        color: #a5adbf;
+        font-size: 16px;
+      }
+
+      .count {
+        padding: 10px 16px;
+        border: 1px solid rgba(168, 146, 255, 0.28);
+        border-radius: 999px;
+        background: rgba(111, 80, 238, 0.12);
+        color: #cbbfff;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .browser {
+        position: relative;
+        height: 600px;
+        margin-top: 22px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 24px;
+        background: #131725;
+        box-shadow: 0 34px 80px rgba(0, 0, 0, 0.46);
+      }
+
+      .browser-bar {
+        display: flex;
+        height: 54px;
+        align-items: center;
+        gap: 13px;
+        padding: 0 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: #181d2c;
+      }
+
+      .window-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #4b5265;
+      }
+
+      .address {
+        flex: 1;
+        margin-left: 8px;
+        padding: 8px 15px;
+        border-radius: 8px;
+        background: #0e121d;
+        color: #6f778c;
+        font-size: 12px;
+      }
+
+      .app {
+        display: grid;
+        height: calc(100% - 54px);
+        grid-template-columns: 184px 1fr;
+      }
+
+      .sidebar {
+        padding: 18px;
+        border-right: 1px solid rgba(255, 255, 255, 0.07);
+        background: #101420;
+      }
+
+      .side-title {
+        margin-bottom: 17px;
+        color: #d8dbe5;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+      }
+
+      .nav-item {
+        margin-bottom: 5px;
+        padding: 9px 12px;
+        border-radius: 9px;
+        color: #7f879b;
+        font-size: 13px;
+      }
+
+      .nav-item.active {
+        background: rgba(111, 80, 238, 0.15);
+        color: #c9beff;
+      }
+
+      .guide {
+        position: relative;
+        padding: 18px 26px;
+        background:
+          linear-gradient(180deg, rgba(111, 80, 238, 0.045), transparent 26%),
+          #151a28;
+      }
+
+      .breadcrumbs {
+        color: #737b8f;
+        font-size: 11px;
+      }
+
+      .build-title {
+        margin: 8px 0 6px;
+        font-size: 20px;
+      }
+
+      .meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #8790a4;
+        font-size: 11px;
+      }
+
+      .tag {
+        padding: 5px 8px;
+        border-radius: 6px;
+        background: #262c3c;
+        color: #b6bdcc;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 15px;
+      }
+
+      .section-head h3 {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .variants {
+        display: flex;
+        gap: 6px;
+      }
+
+      .variant {
+        padding: 7px 11px;
+        border-radius: 7px;
+        background: #222838;
+        color: #858da0;
+        font-size: 10px;
+      }
+
+      .variant.active {
+        background: #6f50ee;
+        color: #fff;
+      }
+
+      .equipment {
+        display: grid;
+        width: calc(100% - 310px);
+        margin-top: 10px;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+      }
+
+      .socket-group {
+        display: flex;
+        min-height: 90px;
+        align-items: center;
+        gap: 13px;
+        padding: 11px;
+        border: 1px solid rgba(255, 255, 255, 0.075);
+        border-radius: 12px;
+        background: #1b2030;
+      }
+
+      .item {
+        display: grid;
+        width: 52px;
+        height: 60px;
+        flex: 0 0 auto;
+        place-items: center;
+        border: 1px solid #57516d;
+        border-radius: 8px;
+        background: #252a38;
+      }
+
+      .shield {
+        width: 28px;
+        height: 35px;
+        clip-path: polygon(50% 0, 94% 18%, 82% 77%, 50% 100%, 18% 77%, 6% 18%);
+        background: #8f87a4;
+      }
+
+      .wand {
+        width: 8px;
+        height: 44px;
+        border-radius: 6px;
+        background: #c4a06e;
+        transform: rotate(30deg);
+      }
+
+      .gems {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .gem {
+        min-width: 116px;
+        padding: 6px 9px;
+        border-radius: 8px;
+        background: #252b3b;
+      }
+
+      .gem strong {
+        display: block;
+        color: #f0f2f7;
+        font-size: 12px;
+      }
+
+      .gem span {
+        display: block;
+        margin-top: 3px;
+        color: #788196;
+        font-size: 8px;
+      }
+
+      .gem.blue {
+        border-left: 3px solid #6ca4ff;
+      }
+
+      .gem.green {
+        border-left: 3px solid #62d5a6;
+      }
+
+      .guide-note {
+        width: calc(100% - 310px);
+        margin-top: 10px;
+        padding: 10px 15px;
+        border-left: 3px solid #6f50ee;
+        border-radius: 0 9px 9px 0;
+        background: rgba(111, 80, 238, 0.08);
+        color: #9ba3b5;
+        font-size: 11px;
+        line-height: 1.65;
+      }
+
+      .translator-panel {
+        position: absolute;
+        right: 18px;
+        bottom: 18px;
+        width: 290px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        border-radius: 16px;
+        background:
+          radial-gradient(circle at 92% -18%, rgba(117, 87, 255, 0.3), transparent 48%),
+          #111522;
+        box-shadow: 0 20px 55px rgba(0, 0, 0, 0.6);
+      }
+
+      .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 13px 14px 8px;
+      }
+
+      .eyebrow {
+        margin: 0 0 2px;
+        color: #9299aa;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+      }
+
+      .panel-header h4 {
+        margin: 0;
+        font-size: 15px;
+      }
+
+      .close {
+        display: grid;
+        width: 29px;
+        height: 29px;
+        place-items: center;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.07);
+        color: #aeb4c2;
+        font-size: 17px;
+      }
+
+      .panel-content {
+        padding: 0 14px 13px;
+      }
+
+      .field-label {
+        margin: 8px 0;
+        color: #aeb4c2;
+        font-size: 10px;
+        font-weight: 700;
+      }
+
+      .languages {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        padding: 4px;
+        border-radius: 10px;
+        background: #0c0f19;
+      }
+
+      .language {
+        padding: 8px 4px;
+        border-radius: 7px;
+        color: #81899b;
+        text-align: center;
+        font-size: 10px;
+      }
+
+      .language.active {
+        background: #6f50ee;
+        color: #fff;
+      }
+
+      .bilingual {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 11px;
+        padding: 11px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.035);
+      }
+
+      .bilingual strong {
+        display: block;
+        font-size: 10px;
+      }
+
+      .bilingual small {
+        color: #858d9f;
+        font-size: 8px;
+      }
+
+      .switch {
+        width: 38px;
+        height: 22px;
+        padding: 3px;
+        border-radius: 99px;
+        background: #6f50ee;
+      }
+
+      .switch::after {
+        display: block;
+        width: 16px;
+        height: 16px;
+        margin-left: 16px;
+        border-radius: 50%;
+        background: #fff;
+        content: "";
+      }
+
+      .panel-status {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin: 11px 2px 0;
+        color: #858c9d;
+        font-size: 9px;
+      }
+
+      .panel-status::before {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #55d6a6;
+        box-shadow: 0 0 0 3px rgba(85, 214, 166, 0.12);
+        content: "";
+      }
+
+      .launcher {
+        position: absolute;
+        right: 18px;
+        bottom: 460px;
+        display: grid;
+        width: 48px;
+        height: 48px;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: 15px;
+        background: linear-gradient(145deg, #8d6cff, #5935dd);
+        box-shadow: 0 10px 28px rgba(33, 19, 91, 0.5);
+        font-size: 20px;
+        font-weight: 800;
+      }
+
+      .features {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 14px;
+      }
+
+      .feature {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 8px 14px;
+        border: 1px solid rgba(255, 255, 255, 0.085);
+        border-radius: 11px;
+        background: rgba(255, 255, 255, 0.035);
+        color: #acb3c3;
+        font-size: 13px;
+      }
+
+      .check {
+        display: grid;
+        width: 19px;
+        height: 19px;
+        place-items: center;
+        border-radius: 50%;
+        background: rgba(85, 214, 166, 0.14);
+        color: #55d6a6;
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .sample { display: block; min-height: 132px; }
+      .sample-label { margin-bottom: 10px; color: #a58eff; font-size: 11px; }
+      .sample strong { display: block; color: #eff2f8; font-size: 14px; }
+      .sample small { display: block; margin-top: 4px; color: #788196; font-size: 9px; }
+      .sample p { margin: 10px 0 0; font-size: 12px; line-height: 1.6; color: #c5c0eb; }
+      .category-row { display: flex; justify-content: space-between; margin-top: 5px; padding: 6px 9px; border: 1px solid #292d40; border-radius: 7px; color: #aeb4c2; font-size: 10px; }
+      .category-row span:last-child { color: #a58eff; }
+    </style>
+  </head>
+  <body>
+    <main class="canvas">
+      <header class="hero">
+        <div class="brand">
+          <img src="../icons/icon-128.png" alt="">
+          <div>
+            <h1>Mobalytics PoE 中文化</h1>
+            <p class="subtitle">技能说明、传奇装备、数值词缀与天赋效果，一键中文化</p>
+          </div>
+        </div>
+        <div class="count">v0.3.2 · 六类独立开关</div>
+      </header>
+
+      <section class="browser">
+        <div class="browser-bar">
+          <span class="window-dot"></span>
+          <span class="window-dot"></span>
+          <span class="window-dot"></span>
+          <div class="address">mobalytics.gg/poe/builds/example-build</div>
+        </div>
+        <div class="app">
+          <aside class="sidebar">
+            <div class="side-title">PATH OF EXILE</div>
+            <div class="nav-item">首页</div>
+            <div class="nav-item">Build Planner</div>
+            <div class="nav-item active">Builds</div>
+            <div class="nav-item">Guides</div>
+            <div class="nav-item">Creators</div>
+          </aside>
+
+          <article class="guide">
+            <div class="breadcrumbs">Path of Exile / Builds / Elementalist</div>
+            <h2 class="build-title">PoE 1 核心内容翻译 · 界面示意</h2>
+            <div class="meta">
+              <span class="tag">Starter</span>
+              <span class="tag">End Game</span>
+              <span>Build Guide · PoE 1</span>
+            </div>
+
+            <div class="section-head">
+              <h3>技能与游戏数据</h3>
+              <div class="variants">
+                <span class="variant active">Act 1</span>
+                <span class="variant">Act 2</span>
+                <span class="variant">Red Map</span>
+                <span class="variant">Mageblood</span>
+              </div>
+            </div>
+
+            <div class="equipment">
+              <div class="socket-group">
+                <div class="item"><div class="shield"></div></div>
+                <div class="gems">
+                  <div class="gem green">
+                    <strong>重盾冲锋</strong>
+                    <span>Shield Charge</span>
+                  </div>
+                  <div class="gem green">
+                    <strong>动量（辅）</strong>
+                    <span>Momentum</span>
+                  </div>
+                  <div class="gem blue">
+                    <strong>效能(辅)</strong>
+                    <span>Efficacy</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="socket-group">
+                <div class="item"><div class="wand"></div></div>
+                <div class="gems">
+                  <div class="gem blue">
+                    <strong>熔岩奔涌</strong>
+                    <span>Rolling Magma</span>
+                  </div>
+                  <div class="gem blue">
+                    <strong>秘术增强(辅)</strong>
+                    <span>Arcane Surge</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="socket-group sample">
+                <div class="sample-label">传奇装备 · 数值词缀</div>
+                <strong>群魔殿</strong>
+                <small>The Pandemonius</small>
+                <p>词缀示例：+(35-40)% 火焰抗性</p>
+                <small>+(35-40)% to Fire Resistance</small>
+              </div>
+
+              <div class="socket-group sample">
+                <div class="sample-label">天赋效果 · 专精选项</div>
+                <strong>5% 的偷取立即生效</strong>
+                <small>5% of Leech is Instant</small>
+                <p>技能的魔力保留效能提高 12%</p>
+                <small>12% increased Mana Reservation Efficiency of Skills</small>
+              </div>
+            </div>
+
+            <div class="guide-note">
+              动态提示与数值范围自动匹配，保留游戏原始数值。未识别的规则显示英文，
+              随时切换简体、繁體、双语或恢复原文。
+            </div>
+
+            <div class="launcher">译</div>
+            <aside class="translator-panel">
+              <div class="panel-header">
+                <div>
+                  <p class="eyebrow">MOBALYTICS · POE 1</p>
+                  <h4>PoE 核心内容中文化</h4>
+                </div>
+                <span class="close">×</span>
+              </div>
+              <div class="panel-content">
+                <div class="field-label">显示语言</div>
+                <div class="languages">
+                  <span class="language active">简体</span>
+                  <span class="language">繁體</span>
+                  <span class="language">English</span>
+                </div>
+                <div class="bilingual">
+                  <div>
+                    <strong>保留英文</strong>
+                    <small>重盾冲锋 (Shield Charge)</small>
+                  </div>
+                  <span class="switch"></span>
+                </div>
+                <div class="category-row"><span>技能名称</span><span>✓</span></div>
+                <div class="category-row"><span>技能描述</span><span>✓</span></div>
+                <div class="category-row"><span>装备与物品基底</span><span>✓</span></div>
+                <div class="category-row"><span>天赋名称</span><span>✓</span></div>
+                <div class="category-row"><span>词缀前后缀名称</span><span>✓</span></div>
+                <div class="category-row"><span>数值词缀与天赋效果</span><span>✓</span></div>
+                <div class="panel-status">翻译已启用 · 本地运行</div>
+              </div>
+            </aside>
+          </article>
+        </div>
+      </section>
+
+      <footer class="features">
+        <div class="feature"><span class="check">✓</span>简体与繁体</div>
+        <div class="feature"><span class="check">✓</span>动态页面自动翻译</div>
+        <div class="feature"><span class="check">✓</span>本地运行 · 无数据收集</div>
+      </footer>
+    </main>
+  </body>
+</html>

@@ -1,135 +1,187 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Translation browser harness</title>
-    <script>
-      const storageListeners = [];
-      const messageListeners = [];
-      globalThis.chrome = {
-        storage: {
-          sync: {
-            get(defaults, callback) {
-              callback({ ...defaults, language: "zh-CN" });
-            },
-            set(values) {
-              const changes = Object.fromEntries(
-                Object.entries(values).map(([key, value]) => [
-                  key,
-                  { newValue: value }
-                ])
-              );
-              changeSettings(changes);
-            }
-          },
-          onChanged: {
-            addListener(listener) {
-              storageListeners.push(listener);
-            }
+<head>
+  <meta charset="utf-8">
+  <title>Core translation browser harness</title>
+  <script>
+    const storageListeners = [], messageListeners = [];
+    let storedSettings = {};
+    globalThis.chrome = {
+      storage: {
+        sync: {
+          get(defaults, callback) { callback({ ...defaults, ...storedSettings }); },
+          set(values) {
+            const changes = Object.fromEntries(Object.entries(values).map(([key, newValue]) => [key, { oldValue: storedSettings[key], newValue }]));
+            storedSettings = { ...storedSettings, ...values };
+            for (const listener of storageListeners) listener(changes, "sync");
           }
         },
-        runtime: {
-          onMessage: {
-            addListener(listener) {
-              messageListeners.push(listener);
-            }
-          }
-        }
-      };
+        onChanged: { addListener(listener) { storageListeners.push(listener); } }
+      },
+      runtime: { onMessage: { addListener(listener) { messageListeners.push(listener); } } }
+    };
+  </script>
+</head>
+<body>
+  <main>
+    <span id="active" data-check>Shield Charge</span>
+    <span id="support" data-check>Momentum</span>
+    <span id="attribute" title="Arcane Surge" data-check>tooltip target</span>
+    <p id="prose" data-check>Cast Shield Charge to move.</p>
+    <section id="gear">
+      <span id="item" data-check>Vaal Regalia</span>
+      <span id="affix" data-check data-poe-entity-id="poe1:mod:IncreasedAccuracy7">of the Deadeye</span>
+      <span id="ambiguous" data-check>of the Deadeye</span>
+    </section>
+    <section id="passive-tree"><span id="passive" title="Chaos Inoculation" data-check>Chaos Inoculation</span></section>
+    <p id="description" data-check></p>
+    <section id="real-equipment-widget" data-widgetid="fixture-equipment">
+      <header><div><h2>Equipment</h2></div></header>
+      <span id="unique" data-check>The Pandemonius</span>
+      <div id="split-stat" data-check><span>+100</span> to maximum Life</div>
+      <div id="range-stat" data-check>+(35-40)% to Fire Resistance</div>
+    </section>
+    <section id="real-tree-widget" data-widgetid="fixture-tree">
+      <header><div><h2>Passive Tree</h2></div></header>
+      <div id="leech-effect" data-check>5% of Leech is Instant</div>
+      <div id="life-effect" data-check>15% increased maximum Life if there are no Life Modifiers on Equipped Body Armour</div>
+      <div id="keystone-effect" data-check>Enemies Chilled by your Hits have Cold Damage taken increased by Chill Effect
+Enemies in your Chilling Areas have Cold Damage taken increased by Chill Effect
+Cannot deal non-Cold Damage</div>
+    </section>
+    <p id="support-description" data-check><span>Supports any skill that hits enemies,</span> making those hits penetrate enemy cold resistance.</p>
+    <ul><li id="support-penetration" data-check>Penetrates <span>(20-34)% to Cold Resistance</span></li></ul>
+    <div id="support-quality" data-check>(0-10)% increased Cold Damage</div>
+    <ul id="focused-channeling-effects">
+      <li id="focused-cost" data-check></li>
+      <li id="focused-damage" data-check></li>
+      <li id="focused-quality" data-check></li>
+    </ul>
+    <pre><span id="code" title="Vaal Regalia" data-check>Vaal Regalia</span></pre>
+    <div contenteditable="true"><span id="editable" title="Chaos Inoculation" data-check>Chaos Inoculation</span></div>
+    <div id="dynamic-root"></div>
+  </main>
+  <script src="../src/stat-translation.js"></script>
+  <script src="../src/translation-core.js"></script>
+  <script src="../src/page-context.js"></script>
+  <script src="../data/poe1-skill-gems.js"></script>
+  <script src="../data/poe1-core.js"></script>
+  <script src="../data/poe1-extended.js"></script>
+  <script>
+    const descriptionEntry = POE1_CORE.entries.find((row) => row.category === "skillDescription" && row.entityIds.includes("poe1:skill:shield_charge"));
+    document.querySelector("#description").textContent = descriptionEntry.en;
+    // Mobalytics' public formatter (module 80617) returns a React Fragment of
+    // strings/values; its bullet renderer (54566) places them directly in li.
+    // These intentionally have multiple text nodes and no child elements.
+    document.querySelector("#focused-cost").append("Supported Skills have ", "20", "% more Cost per second Channelled, up to a maximum of 100%");
+    document.querySelector("#focused-damage").append("(9-24)", "% more Damage per second Channelled, up to a maximum of 60%");
+    document.querySelector("#focused-quality").append("(0-10)", "% increased Cast Speed");
+    const initialSource = [...document.querySelectorAll("[data-check]")].map((element) => [element.id, element.textContent, element.getAttribute("title")]);
+  </script>
+  <script src="../src/content.js"></script>
+  <script>
+    const results = [];
+    const wait = () => new Promise((resolve) => setTimeout(resolve, 90));
+    const text = (id) => document.getElementById(id).textContent;
+    function equal(actual, expected, label) {
+      if (JSON.stringify(actual) !== JSON.stringify(expected)) throw new Error(`${label}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
+      results.push(label);
+    }
+    function status() {
+      let response;
+      for (const listener of messageListeners) listener({ type: "GET_TRANSLATION_STATUS" }, {}, (value) => { response = value; });
+      return response;
+    }
+    (async () => {
+      await wait();
+      equal([text("active"), text("support"), document.querySelector("#attribute").title], ["重盾冲锋", "动量（辅）", "秘术增强(辅)"], "original skill behavior");
+      equal([text("item"), text("passive"), text("affix"), text("ambiguous")], ["瓦尔法衣", "异灵之体", "鹰眼之", "of the Deadeye"], "names, scopes and collisions");
+      equal(text("description").startsWith("向一个目标位置或敌人冲锋"), true, "real skill description");
+      equal([text("unique"), text("split-stat"), text("range-stat")], ["群魔殿", "+100 最大生命", "+(35-40)% 火焰抗性"], "unique equipment and composed numeric modifiers");
+      equal([text("leech-effect"), text("life-effect")], ["5% 的偷取立即生效", "若装备的胸甲没有生命词缀，生命上限提高 15%"], "actual Winter Orb build mastery effects");
+      equal(text("keystone-effect").endsWith("无法造成非冰霜伤害"), true, "actual multiline keystone effects");
+      equal(text("support-description").startsWith("Supports"), false, "support description across inline nodes");
+      equal([text("support-penetration"), text("support-quality")], ["(20-34)% 冰霜抗性穿透", "冰霜伤害提高 (0-10)%"], "screenshot tooltip wording and zero-based quality range");
+      equal([
+        document.querySelector("#focused-cost").childElementCount,
+        text("focused-cost"), text("focused-damage"), text("focused-quality")
+      ], [0, "每持续吟唱 1 秒，被辅助技能的消耗总增 20%，最多 100%", "每持续吟唱 1 秒，伤害增 (9-24)%，最多 60%", "施法速度加快 (0-10)%"], "Focused Channelling screenshot effects across adjacent text nodes");
+      equal([text("prose"), text("code"), document.querySelector("#code").title, text("editable"), document.querySelector("#editable").title], ["Cast Shield Charge to move.", "Vaal Regalia", "Vaal Regalia", "Chaos Inoculation", "Chaos Inoculation"], "prose and ignored descendants");
 
-      function changeSettings(changes) {
-        for (const listener of storageListeners) {
-          listener(changes, "sync");
-        }
-      }
-    </script>
-  </head>
-  <body>
-    <main>
-      <span id="active">Shield Charge</span>
-      <span id="support">Momentum</span>
-      <span id="attribute" title="Arcane Surge">tooltip target</span>
-      <p id="prose">Cast Shield Charge to move.</p>
-      <div id="dynamic-root"></div>
-    </main>
+      const shadow = document.querySelector("#poe-cn-translator-root").shadowRoot;
+      equal(shadow.querySelectorAll("[data-category]").length, 6, "six category controls");
+      shadow.querySelector(".launcher").click();
+      equal(shadow.querySelector(".panel").hidden, false, "floating settings open");
+      shadow.querySelector('[data-category="item"]').click();
+      await wait();
+      equal([text("item"), text("passive"), text("affix")], ["Vaal Regalia", "异灵之体", "鹰眼之"], "category disable restores source only for that category");
+      shadow.querySelector('[data-category="item"]').click();
+      await wait();
+      equal(text("item"), "瓦尔法衣", "category reenable");
+      document.querySelector("#focused-cost").childNodes[1].nodeValue = "30";
+      await wait();
+      equal(text("focused-cost"), "每持续吟唱 1 秒，被辅助技能的消耗总增 30%，最多 100%", "React updates an adjacent numeric fragment");
+      initialSource.find((row) => row[0] === "focused-cost")[1] = "Supported Skills have 30% more Cost per second Channelled, up to a maximum of 100%";
+      document.querySelector("#split-stat span").firstChild.nodeValue = "+150";
+      await wait();
+      equal(text("split-stat"), "+150 最大生命", "composed modifier relearns a reused numeric span");
+      initialSource.find((row) => row[0] === "split-stat")[1] = "+150 to maximum Life";
+      shadow.querySelector('[data-category="stat"]').click();
+      await wait();
+      equal([text("split-stat"), text("leech-effect"), text("unique")], ["+150 to maximum Life", "5% of Leech is Instant", "群魔殿"], "stat switch restores composed sources independently of names");
+      equal(text("focused-cost"), "Supported Skills have 30% more Cost per second Channelled, up to a maximum of 100%", "stat switch restores adjacent text fragments");
+      shadow.querySelector('[data-category="stat"]').click();
+      await wait();
 
-    <script src="../src/translation-core.js"></script>
-    <script src="../data/poe1-skill-gems.js"></script>
-    <script src="../src/content.js"></script>
-    <script>
-      const results = {};
-      const settle = (callback) => setTimeout(callback, 50);
+      const dynamic = document.createElement("span");
+      dynamic.textContent = "Vaal Regalia";
+      dynamic.title = "Chaos Inoculation";
+      document.querySelector("#dynamic-root").append(dynamic);
+      await wait();
+      equal([dynamic.textContent, dynamic.title], ["瓦尔法衣", "异灵之体"], "dynamic tooltip and attributes");
+      dynamic.firstChild.nodeValue = "Marble Amulet";
+      dynamic.title = "Shield Charge";
+      await wait();
+      equal([dynamic.textContent, dynamic.title], ["大理石护身符", "重盾冲锋"], "React text node reuse learns new English");
+      dynamic.removeAttribute("title");
+      await wait();
+      dynamic.title = "Vaal Regalia";
+      await wait();
+      equal(dynamic.title, "瓦尔法衣", "removed and readded attribute learns new English");
 
-      settle(() => {
-        results.initial = {
-          active: document.querySelector("#active").textContent,
-          support: document.querySelector("#support").textContent,
-          attribute: document.querySelector("#attribute").title,
-          prose: document.querySelector("#prose").textContent
-        };
+      chrome.storage.sync.set({ language: "zh-TW", displayMode: "bilingual" });
+      await wait();
+      equal([text("item"), text("passive"), dynamic.textContent], ["瓦爾法衣 (Vaal Regalia)", "異靈之體 (Chaos Inoculation)", "理石護身符 (Marble Amulet)"], "traditional bilingual rerenders from source");
+      equal(text("description"), `${descriptionEntry.zhTW} (${descriptionEntry.en})`, "bilingual skill description");
+      equal(text("focused-cost"), "每引導一秒，被輔助技能具有 30% 更多消耗，最大 100% (Supported Skills have 30% more Cost per second Channelled, up to a maximum of 100%)", "traditional bilingual adjacent fragments");
+      const count = status().translatedNodes;
+      document.querySelector("#dynamic-root").append(document.createTextNode("unknown"));
+      await wait();
+      equal(status().translatedNodes, count, "status count remains page-wide after incremental scans");
+      dynamic.remove();
+      await wait();
+      equal(status().translatedNodes, count - 1, "removed nodes no longer counted");
 
-        const dynamic = document.createElement("span");
-        dynamic.id = "dynamic";
-        dynamic.textContent = "Efficacy";
-        document.querySelector("#dynamic-root").append(dynamic);
-
-        settle(() => {
-          results.dynamic = dynamic.textContent;
-          changeSettings({
-            language: { oldValue: "zh-CN", newValue: "zh-TW" }
-          });
-
-          settle(() => {
-            results.traditional = {
-              active: document.querySelector("#active").textContent,
-              support: document.querySelector("#support").textContent,
-              dynamic: dynamic.textContent
-            };
-            changeSettings({
-              language: { oldValue: "zh-TW", newValue: "en" }
-            });
-
-            settle(() => {
-              results.english = {
-                active: document.querySelector("#active").textContent,
-                support: document.querySelector("#support").textContent,
-                dynamic: dynamic.textContent,
-                attribute: document.querySelector("#attribute").title
-              };
-
-              const expected = {
-                initial: {
-                  active: "重盾冲锋",
-                  support: "动量（辅）",
-                  attribute: "秘术增强(辅)",
-                  prose: "Cast Shield Charge to move."
-                },
-                dynamic: "效能(辅)",
-                traditional: {
-                  active: "重盾衝鋒",
-                  support: "氣勢輔助",
-                  dynamic: "效能輔助"
-                },
-                english: {
-                  active: "Shield Charge",
-                  support: "Momentum",
-                  dynamic: "Efficacy",
-                  attribute: "Arcane Surge"
-                }
-              };
-
-              const passed = JSON.stringify(results) === JSON.stringify(expected);
-              document.body.dataset.result = passed ? "pass" : "fail";
-              document.querySelector("#result").textContent = JSON.stringify({
-                passed,
-                results,
-                expected
-              });
-            });
-          });
-        });
-      });
-    </script>
-    <pre id="result">running</pre>
-  </body>
+      chrome.storage.sync.set({ language: "en" });
+      await wait();
+      equal([...document.querySelectorAll("[data-check]")].map((element) => [element.id, element.textContent, element.getAttribute("title")]), initialSource, "English restores all original text and attributes");
+      chrome.storage.sync.set({ language: "zh-CN", displayMode: "translated" });
+      await wait();
+      document.querySelector("#affix").removeAttribute("data-poe-entity-id");
+      await wait();
+      equal(text("affix"), "of the Deadeye", "context identity change restores ambiguous source");
+      equal(status().categorySizes.item, POE1_CORE.counts.item + POE1_EXTENDED.counts.uniqueNames, "status exposes category sizes");
+      chrome.storage.sync.set({ categories: Object.fromEntries(Object.keys(PoeTranslationCore.DEFAULT_CATEGORIES).map((key) => [key, false])) });
+      await wait();
+      equal(status().active, false, "all category switches off reports inactive");
+      equal([text("item"), text("passive"), text("description")], ["Vaal Regalia", "Chaos Inoculation", descriptionEntry.en], "all category switches off restores original text");
+      document.body.dataset.result = "pass";
+      document.querySelector("#result").textContent = JSON.stringify({ passed: true, checks: results.length, results });
+    })().catch((error) => {
+      document.body.dataset.result = "fail";
+      document.querySelector("#result").textContent = JSON.stringify({ passed: false, error: error.message, results });
+    });
+  </script>
+  <pre id="result">running</pre>
+</body>
 </html>
