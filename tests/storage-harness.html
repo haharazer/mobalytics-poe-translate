@@ -1,0 +1,56 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Translation storage regression tests</title>
+<pre id="result">Storage test pending</pre>
+<script src="../src/llm-cache.js"></script>
+<script>
+async function testStorage() {
+  const assert = (condition, reason) => { if (!condition) throw new Error(reason); };
+  // Seed the schema and value shape written by the previous release.
+  const old = await new Promise((resolve, reject) => {
+    const req = indexedDB.open("poe-guide-translations", 1);
+    req.onupgradeneeded = () => req.result.createObjectStore("paragraphs").createIndex("created", "created");
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+  await new Promise((resolve, reject) => {
+    const tx = old.transaction("paragraphs", "readwrite");
+    tx.objectStore("paragraphs").put({ value: ["原有译文"], created: 1 }, "old");
+    tx.oncomplete = resolve;
+    tx.onabort = () => reject(tx.error);
+  });
+  old.close();
+  assert((await readCache("old")).value[0] === "原有译文", "upgrade must preserve cache hits");
+  assert((await listPage("paragraphs")).limit === 2000, "default capacity");
+  await setCacheLimit(25);
+  const add = i => writeCache("entry-" + i, ["译文 " + i], { source: ["source " + i], language: "zh-TW", model: "fixture" });
+  await Promise.all(Array.from({ length: 24 }, (_, i) => add(i)));
+  const first = await listPage("paragraphs");
+  const second = await listPage("paragraphs", 50);
+  assert(first.rows.length === 20 && first.rows[0].model === "fixture", "paged metadata");
+  assert(second.page === 1 && second.rows.length === 5 && second.rows[4].value[0] === "原有译文", "oldest last");
+  await setCacheLimit(1);
+  assert((await listPage("paragraphs")).count === 1 && !await readCache("old"), "shrink immediately");
+  await Promise.all([add(25), add(26), add(27)]);
+  assert((await listPage("paragraphs")).count === 1, "parallel writes respect saved capacity");
+  for (const bad of [0, -1, 1.5, 100001, NaN]) {
+    let rejected = false;
+    try { await setCacheLimit(bad); } catch { rejected = true; }
+    assert(rejected, "reject invalid capacity");
+  }
+  await Promise.all(Array.from({ length: 105 }, (_, i) => addApiLog({ created: i })));
+  const logs = await listPage("apiLogs");
+  assert(logs.count === 100 && logs.rows[0].created === 104, "recent log cap and sort");
+  assert((await listPage("apiLogs", 4)).rows.at(-1).created === 5, "evict oldest log");
+  await clearApiLogs();
+  assert((await listPage("apiLogs")).count === 0 && (await listPage("paragraphs")).count === 1, "clear only logs");
+  await addApiLog({ created: 106 });
+  await clearCache();
+  const empty = await listPage("paragraphs");
+  assert(empty.count === 0 && empty.limit === 1 && (await listPage("apiLogs")).count === 1, "clear only cache");
+}
+testStorage().then(() => "pass", error => error.stack || error.message).then(result => {
+  document.querySelector("#result").textContent = result;
+  if (location.protocol === "http:") return fetch("/result", { method: "POST", body: result });
+});
+</script>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mobalytics PoE 中文化</title>
+    <title>PoE 攻略中文化</title>
     <link rel="stylesheet" href="popup.css">
   </head>
   <body>
@@ -12,7 +12,7 @@
         <div class="mark" aria-hidden="true">流</div>
         <div>
           <h1>PoE 核心内容中文化</h1>
-          <p>Mobalytics · Path of Exile 1</p>
+          <p>Mobalytics / Maxroll · Path of Exile 1</p>
         </div>
       </header>
 
@@ -58,12 +58,14 @@
         <p class="hint" id="prose-status">可使用自己的 LLM API 翻译作者正文。</p>
         <button type="button" id="start-prose" disabled>翻译本页正文</button>
         <button type="button" id="open-options">配置正文翻译</button>
+        <button type="button" id="open-logs" hidden>查看 API 日志</button>
       </section>
       <footer>
         <span class="status-dot" aria-hidden="true"></span>
         <span id="status">正在检查当前页面…</span>
       </footer>
     </main>
+    <script src="../src/guide-sites.js"></script>
     <script src="../src/translation-core.js"></script>
     <script src="popup.js"></script>
   </body>

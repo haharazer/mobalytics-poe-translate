@@ -3,12 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>攻略正文翻译 · Mobalytics PoE 中文化</title>
+  <title>攻略正文翻译 · PoE 攻略中文化</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body class="options">
   <main>
-    <header><div class="mark" aria-hidden="true">译</div><div><h1>攻略正文翻译</h1><p>Mobalytics · Path of Exile 1</p></div></header>
+    <header><div class="mark" aria-hidden="true">译</div><div><h1>攻略正文翻译</h1><p>Mobalytics / Maxroll · Path of Exile 1</p></div></header>
+    <nav class="settings-nav"><a href="#config">连接设置</a><a href="#cache">缓存管理</a><a href="#api-logs">API 日志</a></nav>
     <form id="config">
       <section>
         <label class="category-row"><strong>自动翻译作者正文</strong><input type="checkbox" id="enabled"></label>
@@ -21,6 +22,8 @@
         <label>模型名称<input type="text" id="model" placeholder="填写服务商提供的模型 ID" maxlength="200" spellcheck="false"></label>
         <label>API Key<input type="password" id="api-key" autocomplete="off" spellcheck="false"></label>
         <p class="hint">密钥仅保存在此浏览器的扩展设置中。本机免鉴权服务可留空。</p>
+        <label>响应正文等待上限（秒）<input type="number" id="body-timeout" min="30" max="240" step="1" required></label>
+        <p class="hint">收到响应头后开始计时。默认 120 秒，可设为 30 至 240 秒。</p>
       </section>
       <section>
         <h2><label for="prompt">PoE 1 翻译提示词</label></h2>
@@ -30,14 +33,32 @@
       <button type="submit" id="save" disabled>保存设置</button>
       <span id="feedback" role="status"></span>
     </form>
-    <section>
+    <section id="cache">
       <h2>本地译文缓存</h2>
-      <p class="hint">最多保存 2,000 段译文。修改模型、端点、提示词或目标语言后，插件会按新配置查找译文。清空后，下次翻译可能再次计费。</p>
+      <p id="cache-count" aria-live="polite"></p>
+      <progress id="cache-usage" value="0" max="2000" aria-label="缓存条数使用率"></progress>
+      <form id="capacity">
+        <label for="limit">最多保留条数</label>
+        <input type="number" id="limit" min="1" max="100000" step="1" required>
+        <button type="submit">应用上限</button>
+      </form>
+      <p class="hint">支持 1 至 100,000 条。降低上限会立即移除超出的最早记录。展开一条记录可对照待译片段与译文。</p>
+      <div id="cache-list"></div>
+      <div class="pager"><button id="cache-prev" type="button">上一页</button><span id="cache-page"></span><button id="cache-next" type="button">下一页</button><button id="cache-refresh" type="button">刷新缓存</button></div>
       <button type="button" id="clear">清空译文缓存</button>
       <span id="cache-feedback" role="status"></span>
     </section>
+    <section id="api-logs">
+      <h2>API 请求日志</h2>
+      <p class="hint">本机保留最近 100 次 API 请求。展开失败记录可查看错误阶段和服务端响应前 4,096 个字符。命中缓存不会产生 API 请求。</p>
+      <div id="log-list"></div>
+      <div class="pager"><button id="log-prev" type="button">上一页</button><span id="log-page"></span><button id="log-next" type="button">下一页</button><button id="log-refresh" type="button">刷新日志</button></div>
+      <button type="button" id="clear-logs">清空日志</button>
+      <span id="log-feedback" role="status"></span>
+    </section>
   </main>
   <script src="../src/llm.js"></script>
+  <script src="../src/llm-cache.js"></script>
   <script src="options.js"></script>
 </body>
 </html>

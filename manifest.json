@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Mobalytics PoE 中文化",
-  "version": "0.4.3",
-  "version_name": "0.4.3 正文翻译跳过评论区",
-  "description": "使用本地词库翻译 PoE 1 游戏内容，可选接入自定义 LLM 翻译 Mobalytics 攻略正文。",
+  "name": "PoE 攻略中文化 · Mobalytics 与 Maxroll",
+  "version": "0.6.3",
+  "version_name": "0.6.3 富文本术语回填修复",
+  "description": "使用本地词库翻译 PoE 1 游戏内容，可选接入自定义 LLM 翻译 Mobalytics 和 Maxroll 攻略正文。",
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
@@ -15,7 +15,7 @@
   "background": { "service_worker": "src/background.js" },
   "options_ui": { "page": "popup/options.html", "open_in_tab": true },
   "action": {
-    "default_title": "Mobalytics PoE 中文化",
+    "default_title": "PoE 攻略中文化",
     "default_popup": "popup/popup.html",
     "default_icon": {
       "16": "icons/icon-16.png",
@@ -26,15 +26,19 @@
     {
       "matches": [
         "https://mobalytics.gg/poe/builds/*",
-        "https://www.mobalytics.gg/poe/builds/*"
+        "https://www.mobalytics.gg/poe/builds/*",
+        "https://maxroll.gg/poe/build-guides/*",
+        "https://www.maxroll.gg/poe/build-guides/*"
       ],
       "js": [
+        "src/guide-sites.js",
         "src/stat-translation.js",
         "src/translation-core.js",
         "src/page-context.js",
         "data/poe1-skill-gems.js",
         "data/poe1-core.js",
         "data/poe1-extended.js",
+        "src/llm.js",
         "src/guide-prose.js",
         "src/content.js"
       ],

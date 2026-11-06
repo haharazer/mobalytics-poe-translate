@@ -1,8 +1,6 @@
 (function (global) {
   "use strict";
   // Both the site's static rich-text renderer and its hydrated Lexical viewer use this class.
-  const RICH = ".lexical-rich-text-content";
-  const BLOCK = "p, li, h3, h4, blockquote, td, th";
   // Keep a normal paragraph together. Large pastes and highly formatted lists may
   // require several requests; indices map each returned piece back to its DOM node.
   function* batches(parts) {
@@ -44,16 +42,19 @@
       // even when sorting or expanding replies replaces the entire rich text.
       if (section.querySelector(":scope > span#comments")) return true;
       const heading = section.querySelector("h2");
-      if (heading?.closest(SECTION) === section && !heading.closest(RICH) &&
+      if (heading?.closest(SECTION) === section && !heading.closest(".lexical-rich-text-content, [data-lexical-editor]") &&
           /^comments(?:\s*(?:\([\d,]+\)|[\d,]+))?$/i.test(heading.textContent.trim())) return true;
     }
     return false;
   }
-  function create({ sourceOf, writeText, localize, knownName, settings, rescan, onStatus }) {
+  function create({ site, sourceOf, writeText, localize, knownName, settings, rescan, onStatus }) {
+    const { rich: RICH, blocks: BLOCK } = site;
+    const excluded = site.protected ? EXCLUDE + ", " + site.protected : EXCLUDE;
     let revision = null, generation = 0, stateRequest = 0, busy = false, error = "";
     let automatic = false, manualGuide = null, matchedProse = false;
     let records = new WeakMap();
     const queue = new Set();
+    const failedBlocks = new Set();
     const recentResults = new Map();
     // Variant selection can change the query/hash while the build slug stays the same.
     const guidePath = () => location.pathname.replace(/\/$/, "");
@@ -90,7 +91,8 @@
       return { masked: masked + text.slice(end), terms };
     }
     function makePlan(block) {
-      if (!block.isConnected || !block.closest(RICH) || block.isContentEditable || block.closest(EXCLUDE) || inComments(block)) return;
+      if (!block.isConnected || !block.closest(RICH) || block.isContentEditable || block.closest(excluded) ||
+          inComments(block) || (site.accepts && !site.accepts(block))) return;
       if (!block.getClientRects().length || getComputedStyle(block).visibility !== "visible") return;
       const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
       const rows = [], parts = [], locked = new WeakMap();
@@ -108,10 +110,10 @@
         const element = node.parentElement;
         const source = sourceOf(node);
         if (!source.trim() || element.closest(BLOCK) !== block) continue;
-        let fixed = element.isContentEditable || !!element.closest(EXCLUDE);
+        let fixed = element.isContentEditable || !!element.closest(excluded);
         for (let e = element; !fixed && e !== block; e = e.parentElement) fixed = covered(e);
         if (fixed || protectedText(source, element) || /^(?:https?:\/\/|www\.)\S+$/i.test(source.trim()) ||
-            !/[a-z]/i.test(source) || /⟦\d+⟧/.test(source)) {
+            !/[a-z]/i.test(source) || /⟦\d+⟧/.test(source) || /^"[^"]*[|$\\][^"]*"$/.test(source.trim())) {
           parts.push(null);
           continue;
         }
@@ -131,6 +133,62 @@
         writeText(node, source.match(/^\s*/)[0] + display + source.match(/\s*$/)[0]);
       }
     }
+    function takeBatch() {
+      const jobs = [];
+      let chars = 0, fragments = 0;
+      for (const block of queue) {
+        const record = records.get(block);
+        if (!record || makePlan(block)?.signature !== record.signature) {
+          queue.delete(block);
+          records.delete(block);
+          continue;
+        }
+        if (!record.chunks) {
+          record.chunks = [...batches(record.parts)].filter(chunk => chunk.some(row => row.piece !== null));
+          record.next = 0;
+          record.partial = record.parts.map(part => part === null ? null : "");
+        }
+        const chunk = record.chunks[record.next];
+        const parts = chunk.map(row => row.piece);
+        const size = parts.join("").length;
+        if (!PoeLLM.fitsBatch(jobs.length + 1, chars + size, fragments + parts.length)) break;
+        queue.delete(block);
+        jobs.push({ block, record, chunk, parts });
+        chars += size;
+        fragments += parts.length;
+      }
+      return jobs;
+    }
+    function applyReply(job, reply) {
+      const { block, record, chunk } = job;
+      if (records.get(block) !== record) return;
+      const current = makePlan(block);
+      if (current?.signature !== record.signature || reply?.stale) {
+        records.delete(block);
+        return;
+      }
+      if (!reply?.result) {
+        if (reply?.kind === "paragraph-format") {
+          failedBlocks.add(block);
+          return;
+        }
+        error ||= reply?.error || "扩展连接已中断，请刷新攻略页。";
+        return;
+      }
+      chunk.forEach(({ index, piece }, i) => {
+        if (piece !== null) record.partial[index] += reply.result[i].trim();
+      });
+      if (++record.next < record.chunks.length) {
+        queue.add(block);
+        return;
+      }
+      record.result = record.partial;
+      delete record.partial;
+      delete record.chunks;
+      if (recentResults.size >= 256) recentResults.delete(recentResults.keys().next().value);
+      recentResults.set(record.signature, record.result);
+      render(current, record.result);
+    }
     async function pump() {
       if (busy || !queue.size) return;
       busy = true;
@@ -138,67 +196,44 @@
       try {
         while (queue.size && !error) {
           expireManualGuide();
-          if (!queue.size) break;
-          const block = queue.values().next().value;
-          queue.delete(block);
-          const record = records.get(block);
-          if (!record) continue;
-          if (!block.isConnected) { records.delete(block); continue; }
+          const jobs = takeBatch();
+          if (!jobs.length) break;
           const ticket = generation;
+          let reply;
           try {
-            const result = record.parts.map(p => p === null ? null : "");
-            let stale = false;
-            for (const batch of batches(record.parts)) {
-              expireManualGuide();
-              // A queued or partially translated node can move into another widget.
-              if (ticket !== generation || records.get(block) !== record || makePlan(block)?.signature !== record.signature) { stale = true; break; }
-              const parts = batch.map(row => row.piece);
-              if (parts.every(p => p === null)) continue;
-              const reply = await chrome.runtime.sendMessage({
-                type: "TRANSLATE_PROSE", parts, revision, language: settings().language, manual: record.manual
-              });
-              if (reply?.stale) { stale = true; break; }
-              if (!reply?.result) throw new Error(reply?.error || "扩展连接已中断，请刷新攻略页。");
-              batch.forEach(({ index, piece }, i) => {
-                if (piece !== null) result[index] += reply.result[i].trim();
-              });
-            }
-            expireManualGuide();
-            if (ticket !== generation || records.get(block) !== record) continue;
-            if (stale) { records.delete(block); continue; }
-            // A tab may remount an identical paragraph as a different DOM node.
-            // The worker's persistent cache remains the fallback for older entries.
-            if (recentResults.size >= 256) recentResults.delete(recentResults.keys().next().value);
-            recentResults.set(record.signature, result);
-            const current = makePlan(block);
-            if (current?.signature !== record.signature) { records.delete(block); continue; }
-            record.result = result;
-            render(current, record.result);
-          } catch (e) {
-            if (ticket === generation && records.get(block) === record) {
-              if (block.isConnected) error = e.message;
-              else records.delete(block);
-            }
-          }
+            reply = await chrome.runtime.sendMessage({
+              type: "TRANSLATE_PROSE_BATCH", paragraphs: jobs.map(job => job.parts),
+              revision, language: settings().language, manual: !automatic
+            });
+          } catch (e) { reply = { error: e.message }; }
+          expireManualGuide();
+          if (ticket === generation) jobs.forEach((job, i) => applyReply(job, reply?.rows?.[i] || reply));
         }
       } finally { busy = false; onStatus(); }
     }
     function scan(root) {
       expireManualGuide();
       if (!revision || settings().language === "en" || !(automatic || manualGuide !== null)) return;
+      for (const block of failedBlocks) {
+        if (!block.isConnected) {
+          failedBlocks.delete(block);
+          records.delete(block);
+        }
+      }
       const blocks = [...root.querySelectorAll(BLOCK)];
       const parent = root.closest?.(BLOCK);
       if (parent) blocks.unshift(parent);
       for (const block of blocks) {
         const plan = makePlan(block);
         const previous = records.get(block);
-        if (!plan) { records.delete(block); queue.delete(block); continue; }
+        if (!plan) { records.delete(block); queue.delete(block); failedBlocks.delete(block); continue; }
         matchedProse = true;
         if (previous?.signature === plan.signature) {
           if (previous.result) render(plan, previous.result);
           continue;
         }
-        const record = { parts: plan.parts, signature: plan.signature, manual: !automatic };
+        const record = { parts: plan.parts, signature: plan.signature };
+        failedBlocks.delete(block);
         records.set(block, record);
         const cached = recentResults.get(plan.signature);
         if (cached) {
@@ -209,11 +244,12 @@
         }
         queue.add(block);
       }
-      void pump();
+      queueMicrotask(pump);
     }
     function reset() {
       generation++;
       queue.clear();
+      failedBlocks.clear();
       records = new WeakMap();
       error = "";
       manualGuide = null;
@@ -235,6 +271,8 @@
     function start() {
       if (!canStart()) return;
       if (error) reset();
+      for (const block of failedBlocks) records.delete(block);
+      failedBlocks.clear();
       if (!automatic) manualGuide = guidePath();
       scan(document.body);
       onStatus();
@@ -245,10 +283,11 @@
       if (settings().language === "en") return "选择简体或繁体后可翻译正文";
       if (error) return error;
       if (busy || queue.size) return "正在翻译正文…";
+      if (failedBlocks.size) return `有 ${failedBlocks.size} 段译文格式有误，点击重试可单独补译。`;
       if (manualGuide !== null) return matchedProse ? "本页正文已翻译 · 切换变体时继续翻译" : "等待本页正文";
       return automatic ? "自动翻译已启用" : "手动翻译 · 优先使用缓存";
     }
-    return { scan, refresh, reset, start, canStart, status, enabled: () => !!revision && (automatic || manualGuide !== null), failed: () => !!error, busy: () => busy && !error };
+    return { scan, refresh, reset, start, canStart, status, enabled: () => !!revision && (automatic || manualGuide !== null), failed: () => !!error || failedBlocks.size > 0, busy: () => busy && !error };
   }
   global.PoeGuideProse = { create, batches };
 })(globalThis);
