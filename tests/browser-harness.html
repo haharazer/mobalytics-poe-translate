@@ -6,6 +6,8 @@
   <script>
     const storageListeners = [], messageListeners = [];
     let storedSettings = {};
+    let proseRevision = null, automaticProse = false, pendingReply;
+    const proseCalls = [];
     globalThis.chrome = {
       storage: {
         sync: {
@@ -18,7 +20,15 @@
         },
         onChanged: { addListener(listener) { storageListeners.push(listener); } }
       },
-      runtime: { onMessage: { addListener(listener) { messageListeners.push(listener); } } }
+      runtime: {
+        onMessage: { addListener(listener) { messageListeners.push(listener); } },
+        async sendMessage(message) {
+          if (message.type === "PROSE_STATE") return { revision: proseRevision, automatic: automaticProse };
+          proseCalls.push(message);
+          if (pendingReply) return new Promise(resolve => { pendingReply = resolve; });
+          return { result: message.parts.map(p => p === null ? null : p.replace("Use", "使用").replace("to cross gaps.", "跨过缺口。").replace("while levelling.", "用于练级。")) };
+        }
+      }
     };
   </script>
 </head>
@@ -78,6 +88,7 @@ Cannot deal non-Cold Damage</div>
     document.querySelector("#focused-quality").append("(0-10)", "% increased Cast Speed");
     const initialSource = [...document.querySelectorAll("[data-check]")].map((element) => [element.id, element.textContent, element.getAttribute("title")]);
   </script>
+  <script src="../src/guide-prose.js"></script>
   <script src="../src/content.js"></script>
   <script>
     const results = [];
@@ -175,6 +186,106 @@ Cannot deal non-Cold Damage</div>
       await wait();
       equal(status().active, false, "all category switches off reports inactive");
       equal([text("item"), text("passive"), text("description")], ["Vaal Regalia", "Chaos Inoculation", descriptionEntry.en], "all category switches off restores original text");
+      const rich = document.createElement("div");
+      rich.className = "lexical-rich-text-content";
+      rich.innerHTML = '<p id="author">Use Shield Charge to cross gaps.</p><p id="linked">Use <a href="#gem">Shield Charge</a> while levelling.</p><p>Shield Charge</p><p>+100 to maximum Life</p><p><span>+100</span> to maximum Life</p><p contenteditable="true">Private draft text</p>';
+      document.querySelector("main").append(rich);
+      const comments = document.createElement("section");
+      comments.dataset.widgetid = "fixture-comments-uuid";
+      comments.innerHTML = '<header><h2>Comments (214)</h2></header><div class="lexical-rich-text-content"><p>Use my comment while levelling.</p></div>';
+      rich.after(comments);
+      await wait();
+      equal(proseCalls.length, 0, "LLM is opt-in");
+      const send = type => messageListeners.forEach(listener => listener({ type }, {}, () => {}));
+      proseRevision = "configured";
+      chrome.storage.sync.set({ categories: {} });
+      send("REFRESH_PROSE");
+      await wait();
+      equal(proseCalls.length, 0, "saving manual mode does not start a translation");
+      equal(shadow.querySelector("[data-prose-start]").disabled, false, "floating panel offers a manual trigger");
+      shadow.querySelector("[data-prose-start]").click();
+      equal(proseCalls.length, 0, "a synthetic page click cannot trigger a paid request");
+      send("START_PROSE");
+      await wait();
+      equal(proseCalls.every(call => call.manual === true), true, "popup action requests only the current manual batch");
+      equal(proseCalls.map(c => c.parts), [["Use ⟦0⟧ to cross gaps."], ["Use", null, "while levelling."]], "only author fragments sent; exact terms, rich links, combined stats and editable drafts stay local");
+      equal(text("author"), "使用 重盾冲锋 跨过缺口。", "inline glossary term restored inside prose");
+      equal(comments.querySelector("p").textContent, "Use my comment while levelling.", "manual translation skips the Comments widget");
+      const reply = document.createElement("p");
+      reply.textContent = "Use Shield Charge to cross gaps.";
+      comments.querySelector(".lexical-rich-text-content").append(reply);
+      await wait();
+      equal([reply.textContent, proseCalls.length], ["Use Shield Charge to cross gaps.", 2], "a new reply matching cached guide text stays in English without a request");
+      equal(document.querySelector("#linked a").textContent, "重盾冲锋", "dictionary link remains interactive");
+      send("START_PROSE");
+      const act1Source = "Use Shield Charge to cross gaps.";
+      const act2Source = "Use a shield while levelling.";
+      function mountAct(source) {
+        const paragraph = document.createElement("p");
+        paragraph.id = "author";
+        paragraph.textContent = source;
+        document.querySelector("#author").replaceWith(paragraph);
+      }
+      location.hash = "act-2";
+      mountAct(act2Source);
+      await wait();
+      equal(text("author"), "使用 a shield 用于练级。", "Act 2 translates after a tab remount without another manual click");
+      equal([proseCalls.length, proseCalls.at(-1).manual], [3, true], "only the new variant paragraph is requested");
+      location.hash = "act-1";
+      mountAct(act1Source);
+      await wait();
+      equal(text("author"), "使用 重盾冲锋 跨过缺口。", "switching back restores Act 1 on a new DOM node");
+      document.querySelector("#author").firstChild.nodeValue = act2Source;
+      await wait();
+      equal(text("author"), "使用 a shield 用于练级。", "React can reuse the same paragraph for the other variant");
+      document.querySelector("#author").firstChild.nodeValue = act1Source;
+      await wait();
+      equal(proseCalls.length, 3, "revisiting either translated variant sends no request");
+      chrome.storage.sync.set({ displayMode: "bilingual" });
+      await wait();
+      equal(text("author"), "使用 重盾冲锋 跨过缺口。 (Use Shield Charge to cross gaps.)", "bilingual prose without another request");
+      equal(proseCalls.length, 3, "display mode reuses paragraph");
+      const panel = document.createElement("section");
+      panel.style.display = "none";
+      panel.innerHTML = '<div class="lexical-rich-text-content"><p>Use armour while levelling.</p></div>';
+      rich.after(panel);
+      await wait();
+      equal(proseCalls.length, 3, "a mounted but hidden variant does not request translation");
+      panel.style.display = "block";
+      await wait();
+      equal(panel.textContent.startsWith("使用 armour 用于练级。"), true, "showing an existing variant via CSS triggers translation");
+      panel.remove();
+      chrome.storage.sync.set({ categories: { skill: false }, displayMode: "translated" });
+      await wait();
+      equal(text("author"), "使用 Shield Charge 跨过缺口。", "disabled skill category keeps source even inside LLM prose");
+      pendingReply = true;
+      mountAct("Use an uncached setup.");
+      await wait();
+      mountAct(act1Source);
+      await wait();
+      equal(text("author"), "使用 Shield Charge 跨过缺口。", "returning to a cached act renders immediately while another request is pending");
+      pendingReply({ result: ["已离开的章节"] });
+      pendingReply = null;
+      await wait();
+      equal(text("author"), "使用 Shield Charge 跨过缺口。", "a late variant reply cannot overwrite the active act");
+      automaticProse = true;
+      proseRevision = "auto-enabled";
+      send("REFRESH_PROSE");
+      await wait();
+      equal(proseCalls.at(-1).manual, false, "automatic mode starts without a manual click");
+      comments.querySelector("header").replaceWith(Object.assign(document.createElement("span"), { id: "comments" }));
+      const callsBeforeSort = proseCalls.length;
+      comments.querySelector(".lexical-rich-text-content").innerHTML = "<p>Use another comment while levelling.</p>";
+      await wait();
+      equal([comments.querySelector("p").textContent, proseCalls.length], ["Use another comment while levelling.", callsBeforeSort], "automatic translation skips newly sorted comments identified by the widget anchor");
+      pendingReply = true;
+      document.querySelector("#author").firstChild.nodeValue = "Use a different setup.";
+      await wait();
+      chrome.storage.sync.set({ language: "en" });
+      pendingReply({ result: ["过期的翻译"] });
+      await wait();
+      equal(text("author"), "Use a different setup.", "late model reply cannot overwrite English or newer source");
+      equal(text("linked"), "Use Shield Charge while levelling.", "English restores split prose nodes");
       document.body.dataset.result = "pass";
       document.querySelector("#result").textContent = JSON.stringify({ passed: true, checks: results.length, results });
     })().catch((error) => {

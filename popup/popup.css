@@ -181,6 +181,34 @@ footer {
 
 .coverage { margin-top: 10px; line-height: 1.5; }
 
+button {
+  margin-top: 10px;
+  padding: 7px 12px;
+  border: 1px solid #595171;
+  border-radius: 7px;
+  background: #302944;
+  color: #f4f5f8;
+  cursor: pointer;
+}
+.options { width: min(100%, 720px); margin: 0 auto; }
+.options main { padding: 32px 20px; }
+.options section > label { display: block; margin: 12px 0 5px; }
+.options section > .category-row { display: flex; margin: 0; }
+.options .hint { line-height: 1.65; }
+.options input:not([type=checkbox]), .options textarea {
+  width: 100%;
+  margin-top: 5px;
+  padding: 9px;
+  border: 1px solid #454858;
+  border-radius: 6px;
+  color: inherit;
+  background: #111522;
+  font: inherit;
+}
+.options textarea { line-height: 1.6; resize: vertical; }
+.options #save { background: #6444cd; }
+.options [role=status] { margin-left: 8px; }
+
 .status-dot {
   width: 7px;
   height: 7px;

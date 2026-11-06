@@ -33,6 +33,24 @@
   let scheduled = false;
   let floatingControls;
   const pendingRoots = new Set();
+  const prose = globalThis.PoeGuideProse.create({
+    settings: () => settings,
+    sourceOf: node => renderedText.get(node) === node.nodeValue ? originalText.get(node) : node.nodeValue,
+    writeText(node, output) {
+      if (renderedText.get(node) !== node.nodeValue) originalText.set(node, node.nodeValue);
+      renderedText.set(node, output);
+      if (node.nodeValue !== output) node.nodeValue = output;
+    },
+    knownName: source => lookup.has(source),
+    localize(source, element, allCategories, translatedOnly) {
+      const options = allCategories
+        ? { ...DEFAULT_SETTINGS, language: settings.language }
+        : translatedOnly ? { ...settings, displayMode: "translated" } : settings;
+      return translateText(source, lookup, options, getContext(element));
+    },
+    rescan: () => translateRoot(document.body),
+    onStatus: () => floatingControls?.updateProse()
+  });
 
   function createFloatingControls() {
     if (document.querySelector("#poe-cn-translator-root")) return;
@@ -270,6 +288,12 @@
           transform: translateX(17px);
         }
 
+        .prose-actions { display: flex; gap: 8px; }
+        .prose-actions button {
+          padding: 7px 10px; border: 1px solid #635794; border-radius: 7px;
+          background: #302944; color: #fff; cursor: pointer; font-size: 12px;
+        }
+        .prose-actions button:disabled { opacity: .5; cursor: default; }
         .status {
           display: flex;
           align-items: center;
@@ -323,6 +347,12 @@
             <button type="button" data-language="zh-TW">繁體</button>
             <button type="button" data-language="en">English</button>
           </div>
+          <span class="label">LLM 攻略正文翻译</span>
+          <div class="prose-actions">
+            <button type="button" data-prose-start disabled>翻译本页正文</button>
+            <button type="button" data-prose-config>配置 API</button>
+          </div>
+          <div class="status" role="status" data-prose-status></div>
           <div class="option">
             <div>
               <strong>保留英文</strong>
@@ -353,6 +383,17 @@
     const languageButtons = [...shadow.querySelectorAll("[data-language]")];
     const bilingual = shadow.querySelector('input[type="checkbox"]');
     const categoryInputs = [...shadow.querySelectorAll("[data-category]")];
+    const startProse = shadow.querySelector("[data-prose-start]");
+    const proseStatus = shadow.querySelector("[data-prose-status]");
+    startProse.addEventListener("click", event => {
+      // Page scripts can reach this open shadow root. Only an actual user click may start a paid request.
+      if (event.isTrusted) prose.start();
+    });
+    shadow.querySelector("[data-prose-config]").addEventListener("click", async event => {
+      if (!event.isTrusted) return;
+      try { await chrome.runtime.sendMessage({ type: "OPEN_PROSE_OPTIONS" }); }
+      catch { proseStatus.textContent = "请刷新页面，或从扩展工具栏打开配置。"; }
+    });
 
     function setOpen(open) {
       panel.hidden = !open;
@@ -391,7 +432,13 @@
 
     document.body.append(host);
     floatingControls = {
+      updateProse() {
+        startProse.disabled = !prose.canStart();
+        startProse.textContent = prose.failed() ? "重试正文翻译" : "翻译本页正文";
+        proseStatus.textContent = prose.status();
+      },
       update(nextSettings) {
+        this.updateProse();
         for (const button of languageButtons) {
           button.setAttribute(
             "aria-pressed",
@@ -519,10 +566,14 @@
       node = walker.nextNode();
     }
     for (const element of elements.reverse()) translateComposedElement(element);
+    prose.scan(root);
   }
 
   function scheduleTranslation(root) {
     let target = root.nodeType === Node.TEXT_NODE ? root.parentElement : root;
+    if (prose.enabled() && target?.closest?.(".lexical-rich-text-content")) {
+      target = target.closest("p, li, h3, h4, blockquote, td, th") || target;
+    }
     for (let parent = target?.parentElement; parent; parent = parent.parentElement) {
       if (composedGroups.has(parent)) target = parent;
     }
@@ -556,10 +607,17 @@
           continue;
         }
         if (mutation.type === "attributes") {
+          if (mutation.attributeName === "class" || mutation.attributeName === "style") {
+            const el = mutation.target;
+            if (!prose.enabled() || !(el.closest(".lexical-rich-text-content") || el.querySelector(".lexical-rich-text-content"))) continue;
+          }
           const last = renderedAttributes.get(mutation.target);
           if (last?.has(mutation.attributeName) && last.get(mutation.attributeName) === mutation.target.getAttribute(mutation.attributeName)) continue;
           scheduleTranslation(mutation.target);
           continue;
+        }
+        if (mutation.removedNodes.length && mutation.target.closest?.(".lexical-rich-text-content")) {
+          scheduleTranslation(mutation.target);
         }
         for (const node of mutation.addedNodes) {
           scheduleTranslation(node);
@@ -572,11 +630,12 @@
       subtree: true,
       characterData: true,
       attributes: true,
-      attributeFilter: [...TRANSLATABLE_ATTRIBUTES, "id", "aria-labelledby", "data-poe-category", "data-poe-entity-id"]
+      attributeFilter: [...TRANSLATABLE_ATTRIBUTES, "id", "aria-labelledby", "contenteditable", "hidden", "aria-hidden", "class", "style", "data-poe-category", "data-poe-entity-id"]
     });
   }
 
   function applySettings(nextSettings) {
+    if (settings.language !== nextSettings.language) prose.reset();
     settings = normalizeSettings(nextSettings);
     floatingControls?.update(settings);
     translateRoot(document.body);
@@ -586,6 +645,7 @@
     createFloatingControls();
     applySettings(stored);
     observePage();
+    void prose.refresh();
   });
 
   chrome.storage.onChanged.addListener((changes, areaName) => {
@@ -598,6 +658,12 @@
   });
 
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (message?.type === "REFRESH_PROSE") { void prose.refresh(); return; }
+    if (message?.type === "START_PROSE" || message?.type === "RETRY_PROSE") {
+      prose.start();
+      sendResponse({ ok: true });
+      return;
+    }
     if (message?.type !== "GET_TRANSLATION_STATUS") return;
     let translatedNodes = 0;
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -605,7 +671,11 @@
       if (renderedText.get(node) === node.nodeValue && node.nodeValue !== originalText.get(node)) translatedNodes += 1;
     }
     sendResponse({
-      active: settings.language !== "en" && Object.values(settings.categories).some(Boolean),
+      active: settings.language !== "en" && (Object.values(settings.categories).some(Boolean) || prose.enabled()),
+      proseStatus: prose.status(),
+      proseFailed: prose.failed(),
+      proseCanStart: prose.canStart(),
+      proseBusy: prose.busy(),
       language: settings.language,
       displayMode: settings.displayMode,
       dictionarySize: entries.length + statRules.length,
